@@ -42,7 +42,16 @@ export function useBinanceWebSocket(coinIds: string[]) {
 
     return () => {
       if (ws.current) {
-        ws.current.close();
+        // Remove listeners before closing to avoid "ping after close" or state updates on unmounted component
+        ws.current.onmessage = null;
+        ws.current.onerror = null;
+        ws.current.onclose = null;
+        ws.current.onopen = null;
+        
+        if (ws.current.readyState === WebSocket.OPEN || ws.current.readyState === WebSocket.CONNECTING) {
+          ws.current.close();
+        }
+        ws.current = null;
       }
     };
   }, [JSON.stringify(coinIds)]);

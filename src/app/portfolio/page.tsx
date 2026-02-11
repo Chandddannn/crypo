@@ -10,23 +10,6 @@ export default function PortfolioPage() {
   const { balanceUsd, positions, prices, ownerName, user, trades, lastSession } = useWallet();
   const [showFlashback, setShowFlashback] = useState(false);
 
-  useEffect(() => {
-    if (!user) {
-      if (lastSession) {
-        setShowFlashback(true);
-        const timer = setTimeout(() => {
-          setShowFlashback(false);
-          router.push("/login");
-        }, 1000);
-        return () => clearTimeout(timer);
-      } else {
-        router.push("/login");
-      }
-    }
-  }, [user, router, lastSession]);
-
-  if (!user && !showFlashback) return null;
-
   const displayData = useMemo(() => {
     const activePositions = user ? positions : (lastSession?.positions || {});
     const activeBalance = user ? balanceUsd : (lastSession?.balanceUsd || 0);
@@ -75,6 +58,23 @@ export default function PortfolioPage() {
       trades: activeTrades
     };
   }, [user, positions, prices, balanceUsd, trades, lastSession, ownerName]);
+
+  useEffect(() => {
+    if (!user) {
+      if (lastSession) {
+        setShowFlashback(true);
+        const timer = setTimeout(() => {
+          setShowFlashback(false);
+          router.push("/login");
+        }, 1000);
+        return () => clearTimeout(timer);
+      } else {
+        router.push("/login");
+      }
+    }
+  }, [user, router, lastSession]);
+
+  if (!user && !showFlashback) return null;
 
   const {
     rows,
