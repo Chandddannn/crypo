@@ -23,7 +23,6 @@ export function MarketMetrics({ asset }: MarketMetricsProps) {
     {
       label: "Market Cap",
       value: formatCurrency(data.market_cap.usd),
-      rank: data.market_cap_rank ? `#${data.market_cap_rank}` : null,
       tooltip: "The total market value of a cryptocurrency's circulating supply."
     },
     {
@@ -82,11 +81,6 @@ export function MarketMetrics({ asset }: MarketMetricsProps) {
                     </div>
                   </div>
                 </div>
-                {metric.rank && (
-                  <span className="rounded-md bg-slate-900 px-2 py-0.5 text-[9px] font-black text-white shadow-sm transition-colors">
-                    {metric.rank}
-                  </span>
-                )}
               </div>
               
               <div className="flex flex-col gap-3">

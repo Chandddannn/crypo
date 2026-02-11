@@ -249,7 +249,7 @@ export default function Home() {
               Virtual Crypto Desk
             </p>
             <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900 md:text-4xl transition-colors">
-              CoinSwitch Market Watch
+              CryptoCat Market Watch
             </h1>
             <p className="mt-2 max-w-xl text-sm font-medium text-slate-600 transition-colors">
               Stream real-time prices from Binance and practice trading with a
@@ -274,8 +274,8 @@ export default function Home() {
             <table className="min-w-full text-left text-sm table-fixed sm:table-auto">
               <thead className="sticky top-0 z-10 bg-slate-50/90 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 backdrop-blur transition-colors">
                 <tr>
-                  <th className="px-4 sm:px-6 py-4 w-12 sm:w-20">Rank</th>
-                  <th className="px-2 sm:px-3 py-4 w-auto">Asset</th>
+                  <th className="px-4 sm:px-6 py-4 w-auto">Asset</th>
+                  <th className="hidden md:table-cell px-2 sm:px-3 py-4 text-right w-32">Mkt Cap</th>
                   <th className="px-2 sm:px-3 py-4 w-16 sm:w-24">Sym</th>
                   <th className="px-2 sm:px-3 py-4 text-right w-24 sm:w-32">Price</th>
                   <th className="px-4 sm:px-6 py-4 text-right w-24 sm:w-32">24h</th>
@@ -308,10 +308,7 @@ export default function Home() {
                         onClick={() => router.push(`/coin/${asset.id}`)}
                         className="group cursor-pointer bg-white text-sm text-slate-700 transition-all hover:bg-slate-50/80"
                       >
-                        <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-[10px] font-black text-slate-600 transition-colors">
-                          #{asset.rank}
-                        </td>
-                        <td className="px-2 sm:px-3 py-4 overflow-hidden">
+                        <td className="px-4 sm:px-6 py-4 overflow-hidden">
                           <div className="flex items-center gap-2 sm:gap-3">
                             <div className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg sm:rounded-xl bg-slate-100 text-[10px] font-black text-slate-600 transition-colors">
                               {asset.image ? (
@@ -330,11 +327,14 @@ export default function Home() {
                               <p className="truncate text-xs sm:text-sm font-black text-slate-900 transition-colors">
                                 {asset.name}
                               </p>
-                              <p className="hidden sm:block text-[10px] font-bold text-slate-600 tabular-nums transition-colors">
-                                Mkt Cap: {formatCurrency(asset.marketCapUsd, 0)}
+                              <p className="md:hidden text-[9px] font-bold text-slate-500 tabular-nums transition-colors">
+                                {formatCurrency(asset.marketCapUsd, 0)}
                               </p>
                             </div>
                           </div>
+                        </td>
+                        <td className="hidden md:table-cell px-2 sm:px-3 py-4 text-right tabular-nums text-xs font-bold text-slate-600 transition-colors">
+                          {formatCurrency(asset.marketCapUsd, 0)}
                         </td>
                         <td className="px-2 sm:px-3 py-4">
                           <span className="rounded-md bg-slate-100 px-1.5 sm:px-2 py-0.5 sm:py-1 text-[8px] sm:text-[9px] font-black text-slate-600 uppercase tracking-widest transition-colors group-hover:bg-slate-200">

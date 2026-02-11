@@ -53,9 +53,6 @@ export function AssetHeader({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="rounded-md bg-slate-900 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white transition-colors">
-                Rank #{asset.market_cap_rank ?? "–"}
-              </span>
               <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200 transition-colors">
                 Coin
               </span>

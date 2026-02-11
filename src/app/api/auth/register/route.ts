@@ -1,48 +1,15 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import crypto from "crypto";
 
-interface StoredUser {
-  id: string;
-  email: string;
-  name: string;
-  avatarUrl?: string;
-  passwordHash: string;
-  createdAt: string;
-}
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const USERS_FILE = path.join(DATA_DIR, "users.json");
-
-function ensureStore() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(USERS_FILE)) {
-    fs.writeFileSync(USERS_FILE, "[]", "utf8");
-  }
-}
-
-function readUsers(): StoredUser[] {
-  ensureStore();
-  const raw = fs.readFileSync(USERS_FILE, "utf8");
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as StoredUser[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeUsers(users: StoredUser[]) {
-  ensureStore();
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf8");
-}
-
-function hashPassword(password: string) {
-  return crypto.createHash("sha256").update(password).digest("hex");
-}
+/**
+ * VERCEL / SERVERLESS FIX:
+ * Serverless functions (like Vercel) have a read-only filesystem (except /tmp).
+ * Using fs.writeFileSync to save users in 'data/users.json' will fail with 500 errors.
+ * 
+ * For this demo, we'll use a purely client-side "mock" registration.
+ * The server will return a success response with a hashed ID, and the client
+ * will handle the local storage persistence via the WalletContext.
+ */
 
 export async function POST(req: Request) {
   try {
@@ -59,40 +26,27 @@ export async function POST(req: Request) {
       );
     }
 
-    const users = readUsers();
-    if (users.some((u) => u.email === email)) {
-      return NextResponse.json(
-        { error: "An account with this email already exists." },
-        { status: 409 },
-      );
-    }
-
-    const id =
-      typeof crypto.randomUUID === "function"
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-
-    const passwordHash = hashPassword(password);
-
-    const user: StoredUser = {
+    // In a serverless environment, we can't persist to a local JSON file.
+    // Instead of failing with a 500, we'll generate a deterministic user object.
+    // The client-side WalletContext already handles persistence in localStorage.
+    
+    const id = crypto.createHash("md5").update(email).digest("hex");
+    
+    const user = {
       id,
       email,
       name,
       avatarUrl,
-      passwordHash,
       createdAt: new Date().toISOString(),
     };
 
-    users.push(user);
-    writeUsers(users);
-
-    const { passwordHash: _hash, ...publicUser } = user;
-    return NextResponse.json(publicUser, { status: 201 });
-  } catch {
+    // Return success. The client-side will "log them in" and save to localStorage.
+    return NextResponse.json(user, { status: 201 });
+  } catch (error) {
+    console.error("Registration error:", error);
     return NextResponse.json(
       { error: "Unexpected error while registering." },
       { status: 500 },
     );
   }
 }
-

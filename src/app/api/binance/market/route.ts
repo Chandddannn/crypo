@@ -4,99 +4,80 @@ import { SUPPORTED_COINS } from "@/utils/binance";
 export async function GET() {
   const symbols = SUPPORTED_COINS.map(c => c.binanceSymbol.toUpperCase());
   
-  // Strategy 1: Attempt direct Binance API calls (with failover)
+  // Strategy 1: Use CoinGecko as the primary source (provides Market Cap + Prices)
+  try {
+    const ids = SUPPORTED_COINS.map(c => c.id).join(',');
+    const cgUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true`;
+    
+    const cgRes = await fetch(cgUrl, { 
+      next: { revalidate: 30 },
+      signal: AbortSignal.timeout(10000),
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0'
+      }
+    });
+    
+    if (cgRes.ok) {
+      const cgData = await cgRes.json();
+      const assets = SUPPORTED_COINS.map((metadata, index) => {
+        const coinData = cgData[metadata.id] || {};
+        return {
+          id: metadata.id,
+          rank: String(index + 1),
+          symbol: metadata.symbol,
+          name: metadata.name,
+          image: metadata.logo,
+          priceUsd: String(coinData.usd || 0),
+          changePercent24Hr: String(coinData.usd_24h_change || 0),
+          marketCapUsd: String(coinData.usd_market_cap || 0),
+        };
+      });
+
+      // If we got valid data (not all zeros), return it
+      const hasData = assets.some(a => parseFloat(a.priceUsd) > 0);
+      if (hasData) {
+        return NextResponse.json(assets);
+      }
+    }
+  } catch (cgError) {
+    console.warn("CoinGecko primary fetch failed:", cgError);
+  }
+
+  // Strategy 2: Fallback to Binance if CoinGecko fails
   const hostnames = [
     "api.binance.com",
     "api1.binance.com",
     "api2.binance.com",
-    "api3.binance.com",
-    "api-gcp.binance.com",
-    "api.binance.us"
+    "api3.binance.com"
   ];
 
-  let data = null;
-  let lastError = null;
+  let binanceData = null;
+  const encodedSymbols = encodeURIComponent(JSON.stringify(symbols));
 
-  // Try Binance first
   for (const hostname of hostnames) {
     try {
-      const url = `https://${hostname}/api/v3/ticker/24hr?symbols=${JSON.stringify(symbols)}`;
+      const url = `https://${hostname}/api/v3/ticker/24hr?symbols=${encodedSymbols}`;
       const res = await fetch(url, { 
         signal: AbortSignal.timeout(8000),
-        headers: {
-          'Cache-Control': 'no-cache',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
+        headers: { 'Cache-Control': 'no-cache' }
       });
       
       if (res.ok) {
-        data = await res.json();
-        break;
+        const json = await res.json();
+        if (Array.isArray(json) && json.length > 0) {
+          binanceData = json;
+          break;
+        }
       }
     } catch (error) {
-      lastError = error;
       continue;
     }
   }
 
-  // Strategy 2: If Binance fails (common on Vercel), use CoinGecko as a fallback
-  if (!data) {
-    console.warn("Binance failed, falling back to CoinGecko...");
-    try {
-      const ids = SUPPORTED_COINS.map(c => c.id).join(',');
-      const cgUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true`;
-      
-      const cgRes = await fetch(cgUrl, { 
-        signal: AbortSignal.timeout(10000),
-        headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-      });
-      
-      if (cgRes.ok) {
-        const cgData = await cgRes.json();
-        const assets = SUPPORTED_COINS.map((metadata, index) => {
-          const coinData = cgData[metadata.id] || {};
-          return {
-            id: metadata.id,
-            rank: String(index + 1),
-            symbol: metadata.symbol,
-            name: metadata.name,
-            image: metadata.logo,
-            priceUsd: String(coinData.usd || 0),
-            changePercent24Hr: String(coinData.usd_24h_change || 0),
-            marketCapUsd: String(coinData.usd_market_cap || 0),
-          };
-        });
-        return NextResponse.json(assets);
-      } else {
-        const errorText = await cgRes.text();
-        console.error(`CoinGecko API error: ${cgRes.status} - ${errorText}`);
-      }
-    } catch (cgError) {
-      console.error("CoinGecko fallback failed completely:", cgError);
-    }
-  }
-
-  if (!data) {
-    // If we're here, both Binance and CoinGecko failed. 
-    // Return a 503 but with a more descriptive body for debugging.
-    return NextResponse.json(
-      { 
-        error: "Market data service unavailable", 
-        details: "Both Binance and CoinGecko fallbacks failed. This is likely due to rate limiting or cloud provider IP blocking.",
-        timestamp: new Date().toISOString()
-      }, 
-      { status: 503 }
-    );
-  }
-
-  try {
-    // Map Binance data back to our Asset format
+  if (binanceData) {
     const assets = SUPPORTED_COINS.map((metadata, index) => {
-      const ticker = data.find((t: any) => t.symbol.toLowerCase() === metadata.binanceSymbol);
-      
+      const ticker = binanceData.find((t: any) => t.symbol.toLowerCase() === metadata.binanceSymbol);
       return {
         id: metadata.id,
         rank: String(index + 1),
@@ -105,13 +86,14 @@ export async function GET() {
         image: metadata.logo,
         priceUsd: ticker ? ticker.lastPrice : "0",
         changePercent24Hr: ticker ? ticker.priceChangePercent : "0",
-        marketCapUsd: "0", // Binance doesn't provide market cap directly in ticker
+        marketCapUsd: "0", // Binance fallback still won't have market cap
       };
     });
-    
     return NextResponse.json(assets);
-  } catch (error) {
-    console.error("Binance Market Error:", error);
-    return NextResponse.json({ error: "Failed to fetch market data" }, { status: 500 });
   }
+
+  return NextResponse.json(
+    { error: "Market data unavailable", details: "All data sources failed" }, 
+    { status: 503 }
+  );
 }

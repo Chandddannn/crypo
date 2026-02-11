@@ -12,5 +12,12 @@
     "name": "fasf",
     "passwordHash": "56b2b50c8b38226c72a4efa69d4cdd93183d97d854f928423c5156f2770f8ed5",
     "createdAt": "2026-02-10T15:16:18.937Z"
+  },
+  {
+    "id": "a394d121-1ba2-4a8d-b064-df6a87087c2e",
+    "email": "chandddann14@gmail.com",
+    "name": "chandan solanki",
+    "passwordHash": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+    "createdAt": "2026-02-11T08:57:52.073Z"
   }
 ]

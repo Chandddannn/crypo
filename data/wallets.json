@@ -258,5 +258,10 @@
         "timestamp": "2026-02-10T15:22:40.825Z"
       }
     ]
+  },
+  "a394d121-1ba2-4a8d-b064-df6a87087c2e": {
+    "balanceUsd": 10000,
+    "positions": {},
+    "trades": []
   }
 }
