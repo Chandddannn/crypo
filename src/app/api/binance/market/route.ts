@@ -44,30 +44,52 @@ export async function GET() {
     console.warn("Binance failed, falling back to CoinGecko...");
     try {
       const ids = SUPPORTED_COINS.map(c => c.id).join(',');
-      const cgUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
-      const cgRes = await fetch(cgUrl, { signal: AbortSignal.timeout(8000) });
+      const cgUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true`;
+      
+      const cgRes = await fetch(cgUrl, { 
+        signal: AbortSignal.timeout(10000),
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
       
       if (cgRes.ok) {
         const cgData = await cgRes.json();
-        const assets = SUPPORTED_COINS.map((metadata, index) => ({
-          id: metadata.id,
-          rank: String(index + 1),
-          symbol: metadata.symbol,
-          name: metadata.name,
-          image: metadata.logo,
-          priceUsd: String(cgData[metadata.id]?.usd || 0),
-          changePercent24Hr: String(cgData[metadata.id]?.usd_24h_change || 0),
-          marketCapUsd: "0",
-        }));
+        const assets = SUPPORTED_COINS.map((metadata, index) => {
+          const coinData = cgData[metadata.id] || {};
+          return {
+            id: metadata.id,
+            rank: String(index + 1),
+            symbol: metadata.symbol,
+            name: metadata.name,
+            image: metadata.logo,
+            priceUsd: String(coinData.usd || 0),
+            changePercent24Hr: String(coinData.usd_24h_change || 0),
+            marketCapUsd: String(coinData.usd_market_cap || 0),
+          };
+        });
         return NextResponse.json(assets);
+      } else {
+        const errorText = await cgRes.text();
+        console.error(`CoinGecko API error: ${cgRes.status} - ${errorText}`);
       }
     } catch (cgError) {
-      console.error("CoinGecko fallback also failed:", cgError);
+      console.error("CoinGecko fallback failed completely:", cgError);
     }
   }
 
   if (!data) {
-    return NextResponse.json({ error: "Market data currently unavailable" }, { status: 503 });
+    // If we're here, both Binance and CoinGecko failed. 
+    // Return a 503 but with a more descriptive body for debugging.
+    return NextResponse.json(
+      { 
+        error: "Market data service unavailable", 
+        details: "Both Binance and CoinGecko fallbacks failed. This is likely due to rate limiting or cloud provider IP blocking.",
+        timestamp: new Date().toISOString()
+      }, 
+      { status: 503 }
+    );
   }
 
   try {
