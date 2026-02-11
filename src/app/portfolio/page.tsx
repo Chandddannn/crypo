@@ -31,11 +31,23 @@ export default function PortfolioPage() {
 
     const posArray = Object.values(activePositions);
     const rows = posArray.map((pos) => {
+      // Use current price from live feed, fallback to average buy price
+      const hasLivePrice = !!prices[pos.assetId];
       const currentPrice = prices[pos.assetId] ?? pos.avgBuyPriceUsd;
       const value = currentPrice * pos.quantity;
       const cost = pos.avgBuyPriceUsd * pos.quantity;
       const pnl = value - cost;
       const pnlPct = cost > 0 ? (pnl / cost) * 100 : 0;
+
+      // Debug log for price tracking
+      console.log(
+        `Portfolio ${pos.symbol}:`,
+        hasLivePrice
+          ? `Live $${currentPrice.toFixed(2)}`
+          : `Using Avg Buy $${currentPrice.toFixed(2)}`,
+        `| Qty: ${pos.quantity.toFixed(4)} | Value: $${value.toFixed(2)}`,
+      );
+
       return {
         assetId: pos.assetId,
         name: pos.name,
@@ -46,6 +58,7 @@ export default function PortfolioPage() {
         value,
         pnl,
         pnlPct,
+        hasLivePrice,
       };
     });
 
@@ -60,15 +73,31 @@ export default function PortfolioPage() {
       .filter((t) => t.type === "SELL" && t.realizedPnlUsd !== undefined)
       .reduce((sum, t) => sum + (t.realizedPnlUsd || 0), 0);
 
+    const totalEquity = activeBalance + totalValue;
+    const livePriceCount = rows.filter((r) => r.hasLivePrice).length;
+
+    // Debug logging
+    console.log("📊 PORTFOLIO EQUITY BREAKDOWN:", {
+      "💵 Available Cash": `$${activeBalance.toFixed(2)}`,
+      "📈 Total Holdings Value": `$${totalValue.toFixed(2)}`,
+      "💰 TOTAL EQUITY": `$${totalEquity.toFixed(2)}`,
+      "🔢 Positions": rows.length,
+      "📡 Live Prices": `${livePriceCount}/${rows.length}`,
+      "🔌 Price Feed Status":
+        Object.keys(prices).length > 0 ? "Connected" : "Disconnected",
+    });
+
     return {
       rows,
-      totalEquity: activeBalance + totalValue,
+      totalEquity,
       totalCostBasis: totalCost,
       totalPnl,
       realizedPnl: realized,
       ownerName: activeName,
       balanceUsd: activeBalance,
       trades: activeTrades,
+      livePriceCount,
+      totalPositions: rows.length,
     };
   }, [user, positions, prices, balanceUsd, trades, lastSession, ownerName]);
 
@@ -117,19 +146,49 @@ export default function PortfolioPage() {
       <div className="mx-auto max-w-7xl space-y-10">
         <header className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div className="space-y-3">
-            <div
-              className={`inline-flex items-center gap-2 rounded-full px-3 py-1 ring-1 ${showFlashback ? "bg-amber-50 ring-amber-500/20" : "bg-sky-50 ring-sky-500/20"}`}
-            >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${showFlashback ? "bg-amber-500" : "bg-sky-500"}`}
-              />
-              <p
-                className={`text-[10px] font-black uppercase tracking-[0.2em] ${showFlashback ? "text-amber-600" : "text-sky-600"}`}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div
+                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 ring-1 ${showFlashback ? "bg-amber-50 ring-amber-500/20" : "bg-sky-50 ring-sky-500/20"}`}
               >
-                {showFlashback
-                  ? "Session Flashback (Redirecting...)"
-                  : "Live Portfolio"}
-              </p>
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${showFlashback ? "bg-amber-500" : "bg-sky-500"}`}
+                />
+                <p
+                  className={`text-[10px] font-black uppercase tracking-[0.2em] ${showFlashback ? "text-amber-600" : "text-sky-600"}`}
+                >
+                  {showFlashback
+                    ? "Session Flashback (Redirecting...)"
+                    : "Live Portfolio"}
+                </p>
+              </div>
+              {!showFlashback && (
+                <div
+                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1 ring-1 ${
+                    displayData.livePriceCount > 0
+                      ? "bg-emerald-50 ring-emerald-500/20"
+                      : "bg-amber-50 ring-amber-500/20"
+                  }`}
+                >
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      displayData.livePriceCount > 0
+                        ? "bg-emerald-500 animate-pulse"
+                        : "bg-amber-500"
+                    }`}
+                  />
+                  <p
+                    className={`text-[10px] font-black uppercase tracking-[0.2em] ${
+                      displayData.livePriceCount > 0
+                        ? "text-emerald-600"
+                        : "text-amber-600"
+                    }`}
+                  >
+                    {displayData.livePriceCount > 0
+                      ? `${displayData.livePriceCount}/${displayData.totalPositions} Real-Time`
+                      : "Prices Loading..."}
+                  </p>
+                </div>
+              )}
             </div>
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
               {displayData.ownerName}&apos;s Dashboard
@@ -153,6 +212,18 @@ export default function PortfolioPage() {
               <p className="text-xl sm:text-2xl font-black tabular-nums text-slate-900">
                 {formatCurrency(totalEquity)}
               </p>
+              <div className="flex items-center gap-2 mt-2">
+                <p className="text-[9px] font-bold text-slate-500">
+                  Cash + Holdings
+                </p>
+                {displayData.livePriceCount > 0 && (
+                  <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                    <span className="inline-block h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
+                    {displayData.livePriceCount}/{displayData.totalPositions}{" "}
+                    Live
+                  </span>
+                )}
+              </div>
             </div>
             <div className="glass-panel min-w-[140px] sm:min-w-[160px] p-4 sm:p-5 shadow-xl shadow-sky-500/5 ring-1 ring-sky-500/10">
               <div className="flex items-center gap-2 mb-2">
@@ -165,6 +236,9 @@ export default function PortfolioPage() {
               </div>
               <p className="text-xl sm:text-2xl font-black tabular-nums text-slate-900">
                 {formatCurrency(displayData.balanceUsd)}
+              </p>
+              <p className="text-[9px] font-bold text-slate-500 mt-2">
+                Holdings: {formatCurrency(totalEquity - displayData.balanceUsd)}
               </p>
             </div>
           </div>
@@ -331,17 +405,35 @@ export default function PortfolioPage() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-5 text-right text-[11px] font-bold text-slate-500 tabular-nums">
-                        {formatCurrency(
-                          row.avgBuyPrice,
-                          row.avgBuyPrice < 1 ? 5 : 2,
-                        )}
+                      <td className="px-4 py-5 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="text-[11px] font-bold text-slate-500 tabular-nums">
+                            {formatCurrency(
+                              row.avgBuyPrice,
+                              row.avgBuyPrice < 1 ? 5 : 2,
+                            )}
+                          </span>
+                        </div>
                       </td>
-                      <td className="px-4 py-5 text-right text-[11px] font-bold text-slate-900 tabular-nums">
-                        {formatCurrency(
-                          row.currentPrice,
-                          row.currentPrice < 1 ? 5 : 2,
-                        )}
+                      <td className="px-4 py-5 text-right">
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-[11px] font-bold text-slate-900 tabular-nums">
+                            {formatCurrency(
+                              row.currentPrice,
+                              row.currentPrice < 1 ? 5 : 2,
+                            )}
+                          </span>
+                          {row.hasLivePrice ? (
+                            <span className="text-[9px] font-black uppercase tracking-wider text-emerald-600 flex items-center gap-1">
+                              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              Live
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-bold text-amber-600">
+                              Static
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 py-5 text-right">
                         <div
