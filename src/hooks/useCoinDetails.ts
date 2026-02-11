@@ -14,9 +14,13 @@ export interface AssetDetail {
   market_data: {
     current_price: { usd: number };
     market_cap: { usd: number };
+    fully_diluted_valuation: { usd: number };
     total_volume: { usd: number };
     price_change_percentage_24h: number;
     circulating_supply: number;
+    total_supply: number;
+    max_supply: number;
+    market_cap_rank: number;
     high_24h: { usd: number };
     low_24h: { usd: number };
     ath: { usd: number };
@@ -46,19 +50,21 @@ export const RANGES: { label: string; value: RangeKey; days: string }[] = [
 ];
 
 export function useCoinDetails(id: string | undefined) {
-  const { 
-    updatePrice, 
-    getUnrealizedPnl, 
-    getPosition, 
-    prices, 
+  const {
+    updatePrice,
+    getUnrealizedPnl,
+    getPosition,
+    prices,
     trades,
-    subscribeToPrice, 
-    unsubscribeFromPrice 
+    subscribeToPrice,
+    unsubscribeFromPrice,
   } = useWallet();
 
   const [asset, setAsset] = useState<AssetDetail | null>(null);
   const [range, setRange] = useState<RangeKey>("7D");
-  const [cachedData, setCachedData] = useState<Record<string, Record<string, HistoryPoint[]>>>({});
+  const [cachedData, setCachedData] = useState<
+    Record<string, Record<string, HistoryPoint[]>>
+  >({});
   const [lastFetchedId, setLastFetchedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [chartLoading, setChartLoading] = useState(true);
@@ -70,7 +76,11 @@ export function useCoinDetails(id: string | undefined) {
   const [roiTime, setRoiTime] = useState<RangeKey>("1Y");
 
   // Use price from context (Binance WebSocket) as priority
-  const currentPrice = prices[id as string] ?? livePrice ?? asset?.market_data?.current_price?.usd ?? null;
+  const currentPrice =
+    prices[id as string] ??
+    livePrice ??
+    asset?.market_data?.current_price?.usd ??
+    null;
 
   const fullHistory = useMemo(() => {
     if (!id || !cachedData[id]) return [];
@@ -91,7 +101,8 @@ export function useCoinDetails(id: string | undefined) {
     } else {
       const days = parseInt(rangeObj.days);
       const cutoff = latestHistoryPoint.time - days * 24 * 60 * 60 * 1000;
-      pastPoint = sortedHistory.find((p) => p.time >= cutoff) || sortedHistory[0];
+      pastPoint =
+        sortedHistory.find((p) => p.time >= cutoff) || sortedHistory[0];
     }
 
     const pastPrice = pastPoint.price;
@@ -100,7 +111,13 @@ export function useCoinDetails(id: string | undefined) {
     const profit = finalValue - roiAmount;
     const percentage = ((finalValue - roiAmount) / roiAmount) * 100;
 
-    return { finalValue, profit, percentage, pastPrice, pastTime: pastPoint.time };
+    return {
+      finalValue,
+      profit,
+      percentage,
+      pastPrice,
+      pastTime: pastPoint.time,
+    };
   }, [fullHistory, roiAmount, roiTime, currentPrice]);
 
   const history = useMemo(() => {
@@ -108,54 +125,65 @@ export function useCoinDetails(id: string | undefined) {
     return fullHistory;
   }, [fullHistory]);
 
-  const loadHistory = useCallback(async (isRetry = false) => {
-    if (!id) return;
-    
-    // Check if we already have this specific range data cached
-    if (!isRetry && cachedData[id]?.[range] && id === lastFetchedId) {
-      return;
-    }
+  const loadHistory = useCallback(
+    async (isRetry = false) => {
+      if (!id) return;
 
-    try {
-      // Show loading if we don't have this range data yet
-      setChartLoading(true);
-      setChartError(null);
-
-      const rangeObj = RANGES.find(r => r.value === range);
-      // Ensure days is "1" for 1D range explicitly
-      const days = range === "24H" ? "1" : (rangeObj?.days || "7");
-
-      const res = await fetch(`/api/binance/history?id=${id}&days=${days}`);
-      if (res.status === 429) throw new Error("RATE_LIMIT");
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "FETCH_ERROR");
+      // Check if we already have this specific range data cached
+      if (!isRetry && cachedData[id]?.[range] && id === lastFetchedId) {
+        return;
       }
-      
-      const json = await res.json();
-      const points: [number, number][] = json.prices ?? [];
-      
-      if (points.length === 0) {
-        setChartError("No historical data found for this range.");
-      } else {
-        const mapped: HistoryPoint[] = points.map(([t, p]) => ({ time: t, price: p }));
-        
-        setCachedData(prev => ({
-          ...prev,
-          [id]: {
-            ...(prev[id] || {}),
-            [range]: mapped
-          }
-        }));
-        setLastFetchedId(id as string);
+
+      try {
+        // Show loading if we don't have this range data yet
+        setChartLoading(true);
+        setChartError(null);
+
+        const rangeObj = RANGES.find((r) => r.value === range);
+        // Ensure days is "1" for 1D range explicitly
+        const days = range === "24H" ? "1" : rangeObj?.days || "7";
+
+        const res = await fetch(`/api/binance/history?id=${id}&days=${days}`);
+        if (res.status === 429) throw new Error("RATE_LIMIT");
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "FETCH_ERROR");
+        }
+
+        const json = await res.json();
+        const points: [number, number][] = json.prices ?? [];
+
+        if (points.length === 0) {
+          setChartError("No historical data found for this range.");
+        } else {
+          const mapped: HistoryPoint[] = points.map(([t, p]) => ({
+            time: t,
+            price: p,
+          }));
+
+          setCachedData((prev) => ({
+            ...prev,
+            [id]: {
+              ...(prev[id] || {}),
+              [range]: mapped,
+            },
+          }));
+          setLastFetchedId(id as string);
+        }
+      } catch (err) {
+        console.error("Chart Data Load Error:", err);
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setChartError(
+          errorMessage === "RATE_LIMIT"
+            ? "Rate limit exceeded."
+            : `Failed to load chart: ${errorMessage}`,
+        );
+      } finally {
+        setChartLoading(false);
       }
-    } catch (err: any) {
-      console.error("Chart Data Load Error:", err);
-      setChartError(err.message === "RATE_LIMIT" ? "Rate limit exceeded." : `Failed to load chart: ${err.message}`);
-    } finally {
-      setChartLoading(false);
-    }
-  }, [id, range, lastFetchedId, cachedData]);
+    },
+    [id, range, lastFetchedId, cachedData],
+  );
 
   useEffect(() => {
     if (!id) return;
@@ -175,13 +203,16 @@ export function useCoinDetails(id: string | undefined) {
           }
         }
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Error loading asset.");
+        if (!cancelled)
+          setError(e instanceof Error ? e.message : "Error loading asset.");
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
     fetchAsset();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [id, updatePrice]);
 
   useEffect(() => {
@@ -196,8 +227,9 @@ export function useCoinDetails(id: string | undefined) {
 
   const position = asset ? getPosition(asset.id) : undefined;
   const unrealizedPnl = useMemo(
-    () => (asset && currentPrice ? getUnrealizedPnl(asset.id, currentPrice) : 0),
-    [asset, currentPrice, getUnrealizedPnl]
+    () =>
+      asset && currentPrice ? getUnrealizedPnl(asset.id, currentPrice) : 0,
+    [asset, currentPrice, getUnrealizedPnl],
   );
 
   const chartData = useMemo(() => {
@@ -219,12 +251,12 @@ export function useCoinDetails(id: string | undefined) {
     if (currentPrice !== null && mappedData.length > 0) {
       const lastPoint = mappedData[mappedData.length - 1];
       const now = Date.now();
-      
+
       // If the last point is older than 5 minutes and we have a live price, append it
       if (now - lastPoint.time > 5 * 60 * 1000) {
         mappedData.push({
           time: now,
-          price: currentPrice
+          price: currentPrice,
         });
       } else if (now - lastPoint.time <= 5 * 60 * 1000) {
         // If it's very recent, just update the last point to the live price
@@ -236,37 +268,61 @@ export function useCoinDetails(id: string | undefined) {
     return mappedData;
   }, [history, range, currentPrice]);
 
-  const formatXAxis = useCallback((timestamp: number) => {
-    const date = new Date(timestamp);
-    if (range === "24H") return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
-    if (range === "7D" || range === "1M") return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    if (range === "6M" || range === "1Y") return date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
-    return date.toLocaleDateString("en-US", { year: "numeric" });
-  }, [range]);
+  const formatXAxis = useCallback(
+    (timestamp: number) => {
+      const date = new Date(timestamp);
+      if (range === "24H")
+        return date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+      if (range === "7D" || range === "1M")
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
+      if (range === "6M" || range === "1Y")
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          year: "2-digit",
+        });
+      return date.toLocaleDateString("en-US", { year: "numeric" });
+    },
+    [range],
+  );
 
-    return {
-      asset,
-      range,
-      setRange,
-      loading,
-      error,
-      chartLoading,
-      chartError,
-      loadHistory,
-      currentPrice,
-      priceChange: (asset && currentPrice !== null) ? ((currentPrice - (asset.market_data.current_price.usd / (1 + asset.market_data.price_change_percentage_24h / 100))) / (asset.market_data.current_price.usd / (1 + asset.market_data.price_change_percentage_24h / 100))) * 100 : 0,
-      chartData,
-      formatXAxis,
-      position,
-      unrealizedPnl,
-      detailsExpanded,
-      setDetailsExpanded,
-      roiAmount,
-      setRoiAmount,
-      roiTime,
-      setRoiTime,
-      calculatedRoi,
-      trades,
-      RANGES,
-    };
+  return {
+    asset,
+    range,
+    setRange,
+    loading,
+    error,
+    chartLoading,
+    chartError,
+    loadHistory,
+    currentPrice,
+    priceChange:
+      asset && currentPrice !== null
+        ? ((currentPrice -
+            asset.market_data.current_price.usd /
+              (1 + asset.market_data.price_change_percentage_24h / 100)) /
+            (asset.market_data.current_price.usd /
+              (1 + asset.market_data.price_change_percentage_24h / 100))) *
+          100
+        : 0,
+    chartData,
+    formatXAxis,
+    position,
+    unrealizedPnl,
+    detailsExpanded,
+    setDetailsExpanded,
+    roiAmount,
+    setRoiAmount,
+    roiTime,
+    setRoiTime,
+    calculatedRoi,
+    trades,
+    RANGES,
+  };
 }
