@@ -28,20 +28,20 @@ export function PriceChart({
   formatXAxis,
 }: PriceChartProps) {
   return (
-    <div className="glass-panel overflow-hidden transition-colors">
-      <div className="flex flex-col gap-4 border-b border-slate-100/50 dark:border-white/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between transition-colors">
+    <div className="glass-panel overflow-hidden transition-colors focus:outline-none focus:ring-0">
+      <div className="flex flex-col gap-4 border-b border-slate-100/50 dark:border-white/10 px-4 sm:px-6 py-4 sm:flex-row sm:items-center sm:justify-between transition-colors">
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-slate-900 dark:bg-white transition-colors" />
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-200 transition-colors">
+          <h2 className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-200 transition-colors">
             Price Performance
           </h2>
         </div>
-        <div className="flex gap-1 rounded-xl bg-slate-100 p-1 transition-colors">
+        <div className="flex gap-0.5 sm:gap-1 rounded-lg sm:rounded-xl bg-slate-100 p-0.5 sm:p-1 transition-colors overflow-x-auto no-scrollbar">
           {ranges.map((r) => (
             <button
               key={r.value}
               onClick={() => setRange(r.value)}
-              className={`rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
+              className={`whitespace-nowrap rounded-md sm:rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider transition-all focus:outline-none active:scale-95 ${
                 range === r.value ? "bg-white text-sky-600 shadow-sm ring-1 ring-slate-200" : "text-slate-500 hover:text-slate-800"
               }`}
             >
@@ -51,8 +51,8 @@ export function PriceChart({
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="h-[480px] w-full">
+      <div className="p-2 sm:p-6">
+        <div className="h-[300px] sm:h-[480px] w-full touch-none">
           {chartLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="flex flex-col items-center gap-3">

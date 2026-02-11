@@ -28,6 +28,28 @@ body {
   color: var(--body-text);
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom Utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Focus and Border Cleanup */
+*:focus {
+  outline: none !important;
+}
+
+.recharts-responsive-container:focus,
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none !important;
+  border: none !important;
 }
 
 /* Force light theme by disabling dark mode variables and forcing light colors */
