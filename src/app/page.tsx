@@ -260,7 +260,7 @@ export default function Home() {
 
         <section className="glass-panel overflow-hidden transition-colors mx-auto w-full max-w-[calc(100vw-2rem)] sm:max-w-none">
           <div className="flex items-center justify-between border-b border-slate-200/70 px-4 sm:px-6 py-4 transition-colors">
-            <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] transition-colors">
+            <div className="flex items-center gap-2 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] transition-colors">
               <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.2)]" />
               <span className="hidden xs:inline">Live Market Dashboard</span>
               <span className="xs:hidden">Live Market</span>
@@ -272,7 +272,7 @@ export default function Home() {
 
           <div className="max-h-[640px] overflow-x-auto overflow-y-auto">
             <table className="min-w-full text-left text-sm table-fixed sm:table-auto">
-              <thead className="sticky top-0 z-10 bg-slate-50/90 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 backdrop-blur transition-colors">
+              <thead className="sticky top-0 z-10 bg-slate-50/90 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 backdrop-blur transition-colors">
                 <tr>
                   <th className="px-4 sm:px-6 py-4 w-12 sm:w-20">Rank</th>
                   <th className="px-2 sm:px-3 py-4 w-auto">Asset</th>
@@ -290,7 +290,7 @@ export default function Home() {
                     >
                       <div className="flex flex-col items-center gap-3">
                         <span className="h-8 w-8 animate-pulse rounded-full bg-slate-200" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 transition-colors">
                           {loadingBatchLabel ?? "Loading live market data…"}
                         </span>
                       </div>
@@ -308,7 +308,7 @@ export default function Home() {
                         onClick={() => router.push(`/coin/${asset.id}`)}
                         className="group cursor-pointer bg-white text-sm text-slate-700 transition-all hover:bg-slate-50/80"
                       >
-                        <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-[10px] font-black text-slate-400 transition-colors">
+                        <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-[10px] font-black text-slate-600 transition-colors">
                           #{asset.rank}
                         </td>
                         <td className="px-2 sm:px-3 py-4 overflow-hidden">
@@ -330,7 +330,7 @@ export default function Home() {
                               <p className="truncate text-xs sm:text-sm font-black text-slate-900 transition-colors">
                                 {asset.name}
                               </p>
-                              <p className="hidden sm:block text-[10px] font-bold text-slate-400 tabular-nums transition-colors">
+                              <p className="hidden sm:block text-[10px] font-bold text-slate-600 tabular-nums transition-colors">
                                 Mkt Cap: {formatCurrency(asset.marketCapUsd, 0)}
                               </p>
                             </div>

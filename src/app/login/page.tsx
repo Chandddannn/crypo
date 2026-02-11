@@ -71,20 +71,20 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 bg-white dark:bg-black transition-colors">
+    <main className="flex min-h-screen items-center justify-center px-4 bg-white transition-colors">
       <div className="glass-panel w-full max-w-md px-6 py-6 md:px-8 md:py-8 transition-colors">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white transition-colors">
+          <h1 className="text-xl font-black tracking-tight text-slate-900 transition-colors">
             {mode === "login" ? "Login" : "Create account"}
           </h1>
-          <div className="flex rounded-full bg-slate-100 dark:bg-white/5 p-1 text-xs font-black transition-colors">
+          <div className="flex rounded-full bg-slate-100 p-1 text-xs font-black transition-colors">
             <button
               type="button"
               onClick={() => setMode("login")}
               className={`rounded-full px-3 py-1.5 transition-all ${
                 mode === "login"
-                  ? "bg-slate-900 dark:bg-white text-slate-50 dark:text-slate-900 shadow-sm"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  ? "bg-slate-900 text-slate-50 shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Login
@@ -94,8 +94,8 @@ export default function LoginPage() {
               onClick={() => setMode("register")}
               className={`rounded-full px-3 py-1.5 transition-all ${
                 mode === "register"
-                  ? "bg-slate-900 dark:bg-white text-slate-50 dark:text-slate-900 shadow-sm"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  ? "bg-slate-900 text-slate-50 shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Register
@@ -103,7 +103,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p className="mt-2 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">
+        <p className="mt-2 text-[10px] font-black uppercase tracking-widest text-slate-600 transition-colors">
           Simulation Environment · Local Auth
         </p>
 
@@ -112,7 +112,7 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <label
                 htmlFor="name"
-                className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 transition-colors"
+                className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-600 transition-colors"
               >
                 Full name
               </label>
@@ -122,7 +122,7 @@ export default function LoginPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Alice Johnson"
-                className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm font-black text-slate-900 dark:text-white outline-none ring-0 focus:border-sky-400 dark:focus:border-sky-500 transition-all"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-900 outline-none ring-0 focus:border-sky-400 transition-all"
               />
             </div>
           )}
@@ -130,7 +130,7 @@ export default function LoginPage() {
           <div className="space-y-1.5">
             <label
               htmlFor="email"
-              className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 transition-colors"
+              className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-600 transition-colors"
             >
               Email
             </label>
@@ -140,14 +140,14 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm font-black text-slate-900 dark:text-white outline-none ring-0 focus:border-sky-400 dark:focus:border-sky-500 transition-all"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-900 outline-none ring-0 focus:border-sky-400 transition-all"
             />
           </div>
 
           <div className="space-y-1.5">
             <label
               htmlFor="password"
-              className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 transition-colors"
+              className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-600 transition-colors"
             >
               Password
             </label>
@@ -157,7 +157,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm font-black text-slate-900 dark:text-white outline-none ring-0 focus:border-sky-400 dark:focus:border-sky-500 transition-all"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-900 outline-none ring-0 focus:border-sky-400 transition-all"
             />
           </div>
 
@@ -165,7 +165,7 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <label
                 htmlFor="avatar"
-                className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 transition-colors"
+                className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-600 transition-colors"
               >
                 Profile photo URL (optional)
               </label>
@@ -175,19 +175,19 @@ export default function LoginPage() {
                 value={avatarUrl}
                 onChange={(e) => setAvatarUrl(e.target.value)}
                 placeholder="https://example.com/me.png"
-                className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm font-black text-slate-900 dark:text-white outline-none ring-0 focus:border-sky-400 dark:focus:border-sky-500 transition-all"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-900 outline-none ring-0 focus:border-sky-400 transition-all"
               />
             </div>
           )}
 
           {error && (
-            <p className="text-xs font-black uppercase tracking-widest text-rose-600 dark:text-rose-400">{error.message}</p>
+            <p className="text-xs font-black uppercase tracking-widest text-rose-600">{error.message}</p>
           )}
 
           <button
             type="submit"
             disabled={submitting}
-            className="mt-2 w-full rounded-xl bg-slate-900 dark:bg-white px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-50 dark:text-slate-900 shadow-xl transition-all hover:bg-slate-800 dark:hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-2 w-full rounded-xl bg-slate-900 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-50 shadow-xl transition-all hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {submitting
               ? mode === "login"

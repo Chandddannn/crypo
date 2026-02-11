@@ -53,7 +53,7 @@ export default function ProfilePage() {
               </h1>
             </div>
             <div className="glass-panel min-w-[200px] p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Total Equity</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Total Equity</p>
               <p className="text-3xl font-black text-slate-900">
                 {lastSession.balanceUsd.toLocaleString("en-US", { style: "currency", currency: "USD" })}
               </p>
@@ -62,21 +62,21 @@ export default function ProfilePage() {
           
           <div className="grid gap-6 md:grid-cols-3 opacity-40">
             <div className="glass-panel p-6 h-32 flex flex-col justify-center">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Open Positions</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Open Positions</p>
               <span className="text-3xl font-black text-slate-900">{Object.keys(lastSession.positions).length}</span>
             </div>
             <div className="glass-panel p-6 h-32 flex flex-col justify-center">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Recent Trades</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Recent Trades</p>
               <span className="text-3xl font-black text-slate-900">{lastSession.trades.length}</span>
             </div>
             <div className="glass-panel p-6 h-32 flex flex-col justify-center bg-slate-900 text-white">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Session Status</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Session Status</p>
               <span className="text-xl font-black">Logged Out</span>
             </div>
           </div>
 
           <div className="glass-panel h-64 flex items-center justify-center border-dashed border-2 opacity-30">
-            <p className="font-black uppercase tracking-[0.3em] text-slate-400">Restoring View...</p>
+            <p className="font-black uppercase tracking-[0.3em] text-slate-500">Restoring View...</p>
           </div>
         </div>
       </main>
@@ -115,13 +115,13 @@ export default function ProfilePage() {
   };
 
   return (
-    <main className="min-h-screen px-4 py-12 md:px-10 lg:px-16 bg-white transition-colors">
-      <div className="mx-auto max-w-5xl space-y-10">
+    <main className="min-h-screen px-4 py-8 sm:py-12 md:px-10 lg:px-16 bg-white transition-colors">
+      <div className="mx-auto max-w-5xl space-y-8 sm:y-10">
         {/* Top Navigation */}
         <div className="flex items-center justify-between">
           <button 
             onClick={() => router.push("/")}
-            className="group flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 transition-all hover:text-slate-900"
+            className="group flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 transition-all hover:text-slate-900"
           >
             <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition-all group-hover:-translate-x-1 group-hover:bg-slate-50">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -142,12 +142,11 @@ export default function ProfilePage() {
         </div>
 
         <header className="flex flex-col items-start gap-4">
-         
           <div className="space-y-1">
-            <h1 className="text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
               Profile
             </h1>
-            <p className="max-w-xl text-sm font-medium leading-relaxed text-slate-500">
+            <p className="max-w-xl text-xs sm:text-sm font-medium leading-relaxed text-slate-600">
               Update your personal details and security preferences.
             </p>
           </div>
@@ -156,14 +155,14 @@ export default function ProfilePage() {
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[320px_1fr]">
           {/* Sidebar / Profile Card */}
           <aside className="space-y-8">
-            <div className="glass-panel overflow-hidden p-8 text-center transition-all hover:shadow-2xl hover:shadow-slate-200/50">
-              <div className="relative mx-auto mb-6 h-32 w-32">
+            <div className="glass-panel overflow-hidden p-6 sm:p-8 text-center transition-all hover:shadow-2xl hover:shadow-slate-200/50">
+              <div className="relative mx-auto mb-6 h-24 w-24 sm:h-32 sm:w-32">
                 <div className="h-full w-full rounded-full bg-slate-50 p-1 ring-1 ring-slate-200">
                   <div className="h-full w-full rounded-full overflow-hidden bg-white flex items-center justify-center">
                     {user.avatarUrl ? (
                       <img src={user.avatarUrl} alt={user.name} className="h-full w-full object-cover" />
                     ) : (
-                      <span className="text-4xl font-black text-slate-200">
+                      <span className="text-3xl sm:text-4xl font-black text-slate-300">
                         {user.name.charAt(0).toUpperCase()}
                       </span>
                     )}
@@ -177,15 +176,15 @@ export default function ProfilePage() {
               </div>
               
               <h2 className="text-xl font-black text-slate-900">{user.name}</h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{user.email}</p>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1.5">{user.email}</p>
               
               <div className="mt-8 pt-8 border-t border-slate-100/50 grid grid-cols-2 gap-4">
                 <div className="text-left">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Net Worth</p>
+                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider">Net Worth</p>
                   <p className="text-sm font-black text-slate-900 tabular-nums">{formatCurrency(balanceUsd)}</p>
                 </div>
                 <div className="text-left">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Activity</p>
+                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider">Activity</p>
                   <p className="text-sm font-black text-slate-900 tabular-nums">{totalTrades} Trades</p>
                 </div>
               </div>
@@ -233,7 +232,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-black text-slate-900">Personal Information</h3>
-                    <p className="text-xs font-medium text-slate-400">Your identity and public profile data.</p>
+                    <p className="text-xs font-medium text-slate-600">Your identity and public profile data.</p>
                   </div>
                 </div>
                 {!isEditing && (
@@ -249,28 +248,28 @@ export default function ProfilePage() {
               <form onSubmit={handleSave} className="space-y-8">
                 <div className="grid gap-8 sm:grid-cols-2">
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Full Name</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-600">Full Name</label>
                     <input
                       type="text"
                       disabled={!isEditing}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-bold text-slate-900 outline-none ring-sky-500/10 transition-all focus:border-sky-500 focus:ring-8 disabled:bg-slate-50 disabled:text-slate-400"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-bold text-slate-900 outline-none ring-sky-500/10 transition-all focus:border-sky-500 focus:ring-8 disabled:bg-slate-50 disabled:text-slate-500"
                     />
                   </div>
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Email Address</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-600">Email Address</label>
                     <input
                       type="email"
                       disabled
                       value={user.email}
-                      className="w-full rounded-2xl border border-slate-100 bg-slate-50/50 px-5 py-3.5 text-sm font-bold text-slate-400 outline-none"
+                      className="w-full rounded-2xl border border-slate-100 bg-slate-50/50 px-5 py-3.5 text-sm font-bold text-slate-500 outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2.5">
-                  <label className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Avatar URL</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-600">Avatar URL</label>
                   <div className="relative">
                     <input
                       type="url"
@@ -278,9 +277,9 @@ export default function ProfilePage() {
                       value={avatarUrl}
                       onChange={(e) => setAvatarUrl(e.target.value)}
                       placeholder="https://images.unsplash.com/..."
-                      className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-bold text-slate-900 outline-none ring-sky-500/10 transition-all focus:border-sky-500 focus:ring-8 disabled:bg-slate-50 disabled:text-slate-400"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-bold text-slate-900 outline-none ring-sky-500/10 transition-all focus:border-sky-500 focus:ring-8 disabled:bg-slate-50 disabled:text-slate-500"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                     </div>
                   </div>
@@ -302,7 +301,7 @@ export default function ProfilePage() {
                         setName(user.name);
                         setAvatarUrl(user.avatarUrl || "");
                       }}
-                      className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 transition-colors"
+                      className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-slate-900 transition-colors"
                     >
                       Cancel
                     </button>
@@ -325,19 +324,19 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-black text-slate-900">Security & Privacy</h3>
-                  <p className="text-xs font-medium text-slate-400">Manage your password and authentication methods.</p>
+                  <p className="text-xs font-medium text-slate-600">Manage your password and authentication methods.</p>
                 </div>
               </div>
               
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="group flex items-center justify-between p-5 rounded-2xl bg-white ring-1 ring-slate-100 transition-all hover:ring-slate-200 hover:shadow-lg hover:shadow-slate-100/50">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-slate-900 transition-colors">
+                    <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 group-hover:text-slate-900 transition-colors">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4c.4-.4.6-1 .6-1.6V10l6.6-6.6c.4-.4.4-1 0-1.4l-2-2c-.4-.4-1-.4-1.4 0L10 6.6H7.4c-.6 0-1.2.2-1.6.6L4.4 8.6c-.4.4-.4 1 0 1.4l1.5 1.5L2 15v3Z"/><circle cx="17" cy="7" r="1"/></svg>
                     </div>
                     <div>
                       <p className="text-xs font-black text-slate-900 uppercase tracking-wider">Password</p>
-                      <p className="text-[10px] text-slate-400">Updated 90d ago</p>
+                      <p className="text-[10px] text-slate-500">Updated 90d ago</p>
                     </div>
                   </div>
                   <button className="text-[10px] font-black uppercase tracking-widest text-sky-600 hover:text-sky-700 transition-colors">Update</button>
@@ -345,7 +344,7 @@ export default function ProfilePage() {
                 
                 <div className="group flex items-center justify-between p-5 rounded-2xl bg-white ring-1 ring-slate-100 transition-all hover:ring-slate-200 hover:shadow-lg hover:shadow-slate-100/50">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors">
+                    <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 group-hover:text-emerald-500 transition-colors">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
                     </div>
                     <div>

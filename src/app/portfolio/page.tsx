@@ -110,65 +110,65 @@ export default function PortfolioPage() {
                 {showFlashback ? "Session Flashback (Redirecting...)" : "Live Portfolio"}
               </p>
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
               {displayData.ownerName}&apos;s Dashboard
             </h1>
-            <p className="max-w-xl text-sm font-medium leading-relaxed text-slate-500">
+            <p className="max-w-xl text-xs sm:text-sm font-medium leading-relaxed text-slate-600">
               Real-time monitoring of your virtual holdings, total equity, and historical performance.
             </p>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
-            <div className="glass-panel min-w-[160px] p-5 shadow-xl shadow-emerald-500/5 ring-1 ring-emerald-500/10">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full md:w-auto">
+            <div className="glass-panel min-w-[140px] sm:min-w-[160px] p-4 sm:p-5 shadow-xl shadow-emerald-500/5 ring-1 ring-emerald-500/10">
               <div className="flex items-center gap-2 mb-2">
                 <div className="h-4 w-4 rounded-full bg-emerald-100 flex items-center justify-center">
                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-500">
                   Total Equity
                 </p>
               </div>
-              <p className="text-2xl font-black tabular-nums text-slate-900">
+              <p className="text-xl sm:text-2xl font-black tabular-nums text-slate-900">
                 {formatCurrency(totalEquity)}
               </p>
             </div>
-            <div className="glass-panel min-w-[160px] p-5 shadow-xl shadow-sky-500/5 ring-1 ring-sky-500/10">
+            <div className="glass-panel min-w-[140px] sm:min-w-[160px] p-4 sm:p-5 shadow-xl shadow-sky-500/5 ring-1 ring-sky-500/10">
               <div className="flex items-center gap-2 mb-2">
                 <div className="h-4 w-4 rounded-full bg-sky-100 flex items-center justify-center">
                   <div className="h-1.5 w-1.5 rounded-full bg-sky-500" />
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-500">
                   Available Cash
                 </p>
               </div>
-              <p className="text-2xl font-black tabular-nums text-slate-900">
+              <p className="text-xl sm:text-2xl font-black tabular-nums text-slate-900">
                 {formatCurrency(displayData.balanceUsd)}
               </p>
             </div>
           </div>
         </header>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="glass-panel p-6 bg-gradient-to-br from-white to-slate-50/50">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Unrealized P&L</p>
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+          <div className="glass-panel p-5 sm:p-6 bg-gradient-to-br from-white to-slate-50/50">
+            <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Unrealized P&L</p>
             <div className="flex items-baseline gap-2">
-              <span className={`text-3xl font-black tabular-nums ${totalPnl >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+              <span className={`text-2xl sm:text-3xl font-black tabular-nums ${totalPnl >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
                 {totalPnl >= 0 ? "+" : ""}{formatCurrency(totalPnl)}
               </span>
-              <span className={`text-xs font-bold ${totalPnl >= 0 ? "text-emerald-500" : "text-rose-500"}`}>
+              <span className={`text-[10px] sm:text-xs font-bold ${totalPnl >= 0 ? "text-emerald-500" : "text-rose-500"}`}>
                 ({formatPct(totalCostBasis > 0 ? (totalPnl / totalCostBasis) * 100 : 0)})
               </span>
             </div>
           </div>
-          <div className="glass-panel p-6 bg-gradient-to-br from-white to-slate-50/50">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Realized Profit</p>
-            <span className={`text-3xl font-black tabular-nums ${realizedPnl >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+          <div className="glass-panel p-5 sm:p-6 bg-gradient-to-br from-white to-slate-50/50">
+            <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Realized Profit</p>
+            <span className={`text-2xl sm:text-3xl font-black tabular-nums ${realizedPnl >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
               {realizedPnl >= 0 ? "+" : ""}{formatCurrency(realizedPnl)}
             </span>
           </div>
-          <div className="glass-panel p-6 bg-gradient-to-br from-white to-slate-50/50">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Open Positions</p>
-            <span className="text-3xl font-black tabular-nums text-slate-900">
+          <div className="glass-panel p-5 sm:p-6 bg-gradient-to-br from-white to-slate-50/50">
+            <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Open Positions</p>
+            <span className="text-2xl sm:text-3xl font-black tabular-nums text-slate-900">
               {rows.length}
             </span>
           </div>
@@ -197,7 +197,7 @@ export default function PortfolioPage() {
           <div className="overflow-x-auto">
             <table className="min-w-full text-left">
               <thead>
-                <tr className="bg-white text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 border-b border-slate-50">
+                <tr className="bg-white text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 border-b border-slate-50">
                   <th className="px-8 py-5">Asset</th>
                   <th className="px-4 py-5 text-right">Balance</th>
                   <th className="px-4 py-5 text-right">Avg Price</th>
@@ -228,14 +228,14 @@ export default function PortfolioPage() {
                     >
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
-                          <div className="h-10 w-10 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-slate-400 group-hover:bg-white group-hover:shadow-sm transition-all">
+                          <div className="h-10 w-10 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-slate-500 group-hover:bg-white group-hover:shadow-sm transition-all">
                             {row.symbol[0]}
                           </div>
                           <div className="flex flex-col">
                             <span className="text-sm font-black text-slate-900">
                               {row.name}
                             </span>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
                               {row.symbol}
                             </span>
                           </div>
@@ -246,7 +246,7 @@ export default function PortfolioPage() {
                           <span className="text-sm font-black text-slate-900 tabular-nums">
                             {row.quantity.toFixed(row.quantity < 1 ? 6 : 4)}
                           </span>
-                          <span className="text-[10px] font-bold text-slate-400 tabular-nums">
+                          <span className="text-[10px] font-bold text-slate-600 tabular-nums">
                             {formatCurrency(row.value)}
                           </span>
                         </div>
