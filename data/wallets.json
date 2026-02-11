@@ -1,0 +1,262 @@
+{
+  "6ef5e0f5-88c6-4cd1-8692-87e7817ba301": {
+    "balanceUsd": 154.17591593196198,
+    "positions": {
+      "bitcoin": {
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "quantity": 0.11485322891483751,
+        "avgBuyPriceUsd": 69193.00462934871
+      },
+      "solana": {
+        "assetId": "solana",
+        "symbol": "sol",
+        "name": "Solana",
+        "quantity": 22.306098706633914,
+        "avgBuyPriceUsd": 83.4413056482377
+      }
+    },
+    "trades": [
+      {
+        "id": "a56e5e29-6403-4707-afbf-156aede410f1",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 463.91,
+        "quantity": 0.006736404597670087,
+        "priceUsd": 68866.11296483767,
+        "timestamp": "2026-02-10T21:14:09.665Z"
+      },
+      {
+        "id": "1c65ff10-abf6-4bd6-a15f-23d84553a2a8",
+        "type": "BUY",
+        "assetId": "solana",
+        "symbol": "sol",
+        "name": "Solana",
+        "usdAmount": 1861.25,
+        "quantity": 22.306098706633914,
+        "priceUsd": 83.4413056482377,
+        "timestamp": "2026-02-10T19:44:09.976Z"
+      },
+      {
+        "id": "a5703e29-b7c1-42b8-a347-bed8cf77dca4",
+        "type": "SELL",
+        "assetId": "monero",
+        "symbol": "xmr",
+        "name": "Monero",
+        "usdAmount": 1861.8060459784267,
+        "quantity": 15.706451217531507,
+        "priceUsd": 118.65632088895401,
+        "realizedPnlUsd": -3.3639540215732975,
+        "timestamp": "2026-02-10T19:42:24.007Z"
+      },
+      {
+        "id": "b74a9444-025d-4237-9420-b8a5038ebff7",
+        "type": "BUY",
+        "assetId": "monero",
+        "symbol": "xmr",
+        "name": "Monero",
+        "usdAmount": 1865.17,
+        "quantity": 15.706451217531507,
+        "priceUsd": 118.75184114907519,
+        "timestamp": "2026-02-10T19:40:43.026Z"
+      },
+      {
+        "id": "e51deb94-87d8-4937-9779-7bf6448c4628",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 7483.13,
+        "quantity": 0.10811682431716743,
+        "priceUsd": 69213.37217645028,
+        "timestamp": "2026-02-10T19:39:19.200Z"
+      },
+      {
+        "id": "4383f540-ca09-4945-8d4d-ec72c84b629b",
+        "type": "SELL",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 7495.356651477377,
+        "quantity": 0.1084333640086094,
+        "priceUsd": 69193.27440945808,
+        "realizedPnlUsd": 26.50665147737667,
+        "timestamp": "2026-02-10T19:38:57.548Z"
+      },
+      {
+        "id": "ea417cdd-52cd-40ac-9301-6ec8a05167d1",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 7468.85,
+        "quantity": 0.1084333640086094,
+        "priceUsd": 68879.63006853673,
+        "timestamp": "2026-02-10T19:19:25.068Z"
+      },
+      {
+        "id": "1436efe2-c31f-4e81-8041-7bea062c46e3",
+        "type": "SELL",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 4954.215307292967,
+        "quantity": 0.0719746057964661,
+        "priceUsd": 68901.72480831057,
+        "realizedPnlUsd": -55.034692707033486,
+        "timestamp": "2026-02-10T19:18:59.708Z"
+      },
+      {
+        "id": "08b620bd-db17-491c-bdd3-e948afec03a4",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 5009.25,
+        "quantity": 0.0719746057964661,
+        "priceUsd": 69597.46350213356,
+        "timestamp": "2026-02-10T18:13:35.476Z"
+      },
+      {
+        "id": "4ab632ec-d776-4c39-a320-7838fa078803",
+        "type": "SELL",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 7513.196914834467,
+        "quantity": 0.10787040704560381,
+        "priceUsd": 69719.9337468657,
+        "realizedPnlUsd": -25.373085165533105,
+        "timestamp": "2026-02-10T17:54:25.431Z"
+      },
+      {
+        "id": "4366b6ec-4c06-4eb1-8b8c-81657ca5001b",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 7538.57,
+        "quantity": 0.10787040704560381,
+        "priceUsd": 69885.43203339315,
+        "timestamp": "2026-02-10T17:48:31.485Z"
+      },
+      {
+        "id": "0407ab15-ace4-40fb-bbfb-014714ac192b",
+        "type": "SELL",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 200.29987390040978,
+        "quantity": 0.0028698400789415484,
+        "priceUsd": 69864.65055872829,
+        "realizedPnlUsd": 0.21291829220974767,
+        "timestamp": "2026-02-10T17:33:07.591Z"
+      },
+      {
+        "id": "c236e552-b010-46e7-a287-c3e34817268f",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 200,
+        "quantity": 0.002868587704037378,
+        "priceUsd": 69720.71996213018,
+        "timestamp": "2026-02-10T17:24:14.959Z"
+      },
+      {
+        "id": "e6410bfe-71d4-4360-a268-eb81fc1cd7c0",
+        "type": "SELL",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 10030.94,
+        "quantity": 0.1440233746841259,
+        "priceUsd": 69648,
+        "realizedPnlUsd": 31.026955608200236,
+        "timestamp": "2026-02-10T17:19:33.206Z"
+      },
+      {
+        "id": "ed77c1b6-6730-4349-bd9f-4cf29c5f6228",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 10000,
+        "quantity": 0.14402462705903007,
+        "priceUsd": 69432.57,
+        "timestamp": "2026-02-10T17:09:01.921Z"
+      },
+      {
+        "id": "25de3d1e-5b53-4e9a-8298-f486190f2006",
+        "type": "SELL",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 10020.381252448315,
+        "quantity": 0.1440517136390839,
+        "priceUsd": 69561,
+        "realizedPnlUsd": 18.730661539809088,
+        "timestamp": "2026-02-10T16:43:02.229Z"
+      },
+      {
+        "id": "2935725c-7b35-4ef3-bd7e-2ae92a4a5c08",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 10000,
+        "quantity": 0.14402788379830336,
+        "priceUsd": 69431,
+        "timestamp": "2026-02-10T16:29:40.852Z"
+      },
+      {
+        "id": "c553dd05-8537-423a-b866-412102844b65",
+        "type": "SELL",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 1000,
+        "quantity": 0.014423562331424616,
+        "priceUsd": 69331,
+        "realizedPnlUsd": 0.9416734348824957,
+        "timestamp": "2026-02-10T15:51:53.042Z"
+      },
+      {
+        "id": "90afe9db-3959-42f2-a000-115e4d97f781",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 1000,
+        "quantity": 0.01443709756590535,
+        "priceUsd": 69266,
+        "timestamp": "2026-02-10T15:50:40.090Z"
+      },
+      {
+        "id": "8c5e7c33-4713-4a2f-81fd-5a52e8530278",
+        "type": "SELL",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 150,
+        "quantity": 0.0021679433444139326,
+        "priceUsd": 69190,
+        "timestamp": "2026-02-10T15:30:16.322Z"
+      },
+      {
+        "id": "5b991b9c-4f07-4f66-8831-10bf2f862081",
+        "type": "BUY",
+        "assetId": "bitcoin",
+        "symbol": "btc",
+        "name": "Bitcoin",
+        "usdAmount": 150,
+        "quantity": 0.002178237950713736,
+        "priceUsd": 68863,
+        "timestamp": "2026-02-10T15:22:40.825Z"
+      }
+    ]
+  }
+}
