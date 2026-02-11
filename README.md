@@ -1,71 +1,73 @@
-# Technical Documentation: CoinSwitch Virtual Trader
+# Deployment Guide: Running CoinSwitch on Other Devices
 
-CoinSwitch is a high-fidelity virtual cryptocurrency trading platform built with **Next.js 16**, **React 19**, and **Tailwind CSS**. It provides users with real-time market data and a simulated trading environment.
+This guide provides instructions on how to set up and run the **CoinSwitch Virtual Trader** on different machines or access it from other devices in your network.
 
-## 1. Core Functionalities
+## 1. Prerequisites
+Before you begin, ensure you have the following installed on the target device:
+- **Node.js** (v18.0.0 or higher)
+- **npm** (comes with Node.js) or **yarn**
+- **Git** (to clone the repository)
 
-### 📈 Market Watch (Dashboard)
-- **Real-time Prices**: Live price updates via Binance WebSocket integration.
-- **Price Animations**: Visual "flash" effects (green for up, red for down) using **Framer Motion** when prices change.
-- **Dynamic Filtering**: Browse through popular cryptocurrencies with live performance metrics.
+## 2. Local Setup
+If you are moving the project to a new computer:
 
-### 💼 Portfolio Management
-- **Live Tracking**: Automatic calculation of Total Equity, Available Cash, and Unrealized P&L.
-- **Position Overview**: Detailed list of held assets, including average buy price and current market value.
-- **Trade History**: A comprehensive log of all past BUY and SELL orders.
-- **Session Flashback**: A unique feature that shows a 1-second preview of the last logged-in session even after logout, before redirecting to login.
+1. **Clone/Copy the Project**:
+   ```bash
+   git clone <your-repo-url>
+   # OR copy the project folder manually
+   cd crypo
+   ```
 
-### 🔄 Trading Engine
-- **Simulated Execution**: Buy and sell assets using virtual USD.
-- **Trade Validation**: Prevents over-spending or selling more than what is held.
-- **Realized P&L**: Automatically calculates profit/loss upon selling an asset.
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-### 👤 User Profile
-- **Account Customization**: Users can update their display name and avatar URL.
-- **Trading Performance**: Visual analytics of trading activity (Buy vs. Sell distribution).
-- **Security Dashboard**: Placeholder interface for managing passwords and 2FA.
+3. **Environment Variables**:
+   Ensure any required `.env.local` files are copied over. Currently, the app uses public Binance WebSockets, so no specific API keys are strictly required for the demo.
 
-## 2. Technical Architecture
+4. **Run the Development Server**:
+   ```bash
+   npm run dev
+   ```
+   The app will be available at `http://localhost:3000`.
 
-### Frontend Stack
-- **Framework**: Next.js 16 (App Router)
-- **State Management**: React Context API (`WalletContext`)
-- **Styling**: Tailwind CSS with a "Glassmorphism" UI design.
-- **Animations**: Framer Motion for price updates and UI transitions.
-- **Charts**: Recharts 
+## 3. Accessing from Other Devices (Mobile/Tablets)
+To view the app on a mobile phone or another device within the **same Wi-Fi network**:
 
-### Data Flow & Persistence
-1. **Market Data**: Fetched directly from Binance's WebSocket API (`wss://stream.binance.com/stream`).
-2. **Local Storage (Client-Side Auth)**:
-   - **Key**: `coinswitch_user`
-   - **Format**: JSON object containing `UserProfile` (id, email, name, avatarUrl).
-   - **Usage**: Used to identify the current active user and persist their login session across page refreshes.
-3. **Server-Side JSON Storage (Wallet Data)**:
-   - **File Path**: `data/wallets.json`
-   - **Format**: A flat JSON object where keys are `userId` and values are wallet states.
-   - **Structure**:
-     ```json
-     {
-       "user-id-uuid": {
-         "balanceUsd": 10000,
-         "positions": {
-           "bitcoin": { "assetId": "bitcoin", "quantity": 0.5, "avgBuyPriceUsd": 50000 }
-         },
-         "trades": [ ... ]
-       }
-     }
-     ```
-   - **Usage**: The [WalletContext.tsx](src/context/WalletContext.tsx) performs a `POST` request to `/api/wallet` whenever the wallet state changes (debounced by 1s), which then updates this JSON file on the server.
+1. **Find your Local IP Address**:
+   - **Windows**: Open PowerShell and type `ipconfig`. Look for `IPv4 Address` (e.g., `192.168.1.15`).
+   - **Mac/Linux**: Open terminal and type `ifconfig` or `hostname -I`.
 
-### Key Components
-- **Header**: Main navigation and user profile access.
-- **WalletProvider**: The "brain" of the app, managing all financial logic and data streams.
-- **TradeHistory**: A reusable component for displaying transaction logs.
+2. **Start Next.js on All Interfaces**:
+   Run the dev server with the `-H` flag:
+   ```bash
+   npx next dev -H 0.0.0.0
+   ```
 
-## 3. Design Philosophy
-- **Light Theme Focus**: Optimized for a clean, modern light interface with high readability.
-- **Glassmorphism**: Uses semi-transparent panels with backdrop-blur effects for a premium feel.
-- **Autonomy**: Designed to work as a standalone "Virtual Terminal" with zero backend dependencies for the demo.
+3. **Access on Other Device**:
+   Open the browser on your phone/tablet and enter:
+   `http://<YOUR_IP_ADDRESS>:3000`
+   *(Example: http://192.168.1.15:3000)*
+
+## 4. Production Deployment
+To run the app in a production-ready state (faster and more stable):
+
+1. **Build the Project**:
+   ```bash
+   npm run build
+   ```
+
+2. **Start Production Server**:
+   ```bash
+   npm run start
+   ```
+
+## 5. Hosting on the Cloud (Recommended)
+For permanent access from anywhere in the world, consider these free/low-cost options:
+- **Vercel** (Best for Next.js): Simply connect your GitHub repo to [Vercel](https://vercel.com).
+- **Netlify**: Similar to Vercel, supports Next.js builds.
+- **Railway/Render**: Good for full-stack deployments.
 
 ---
-*Developed as a high-performance trading showcase.*
+*Note: Ensure your firewall allows incoming connections on port 3000 if accessing via local network.*
