@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     "api1.binance.com",
     "api2.binance.com",
     "api3.binance.com",
+    "api-gcp.binance.com",
     "api.binance.us"
   ];
 
@@ -29,7 +30,13 @@ export async function GET(request: NextRequest) {
     try {
       const tickerRes = await fetch(
         `https://${hostname}/api/v3/ticker/24hr?symbol=${metadata.binanceSymbol.toUpperCase()}`,
-        { signal: AbortSignal.timeout(5000) }
+        { 
+          signal: AbortSignal.timeout(8000),
+          headers: {
+            'Cache-Control': 'no-cache',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          }
+        }
       );
       
       if (tickerRes.ok) {

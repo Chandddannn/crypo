@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
     "api1.binance.com",
     "api2.binance.com",
     "api3.binance.com",
+    "api-gcp.binance.com",
     "api.binance.us" // Fallback for US users
   ];
 
@@ -59,7 +60,13 @@ export async function GET(request: NextRequest) {
   for (const hostname of hostnames) {
     try {
       const url = `https://${hostname}/api/v3/klines?symbol=${metadata.binanceSymbol.toUpperCase()}&interval=${interval}&limit=${limit}`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+      const res = await fetch(url, { 
+        signal: AbortSignal.timeout(8000),
+        headers: {
+          'Cache-Control': 'no-cache',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
       
       if (res.ok) {
         klines = await res.json();
