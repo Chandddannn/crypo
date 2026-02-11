@@ -21,52 +21,52 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md transition-colors">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="h-8 w-8 rounded-lg bg-slate-900 flex items-center justify-center transition-all group-hover:scale-110">
-              <span className="text-white font-bold text-xl">C</span>
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md transition-colors overflow-x-hidden">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-3 sm:gap-8">
+          <Link href="/" className="flex items-center gap-1.5 sm:gap-2 group flex-shrink-0">
+            <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-slate-900 flex items-center justify-center transition-all group-hover:scale-110">
+              <span className="text-white font-bold text-lg sm:text-xl">C</span>
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900 hidden sm:inline-block transition-colors">
+            <span className="text-base sm:text-xl font-bold tracking-tight text-slate-900 hidden xs:inline-block transition-colors">
               CoinSwitch
             </span>
           </Link>
-          <nav className="flex items-center gap-4 sm:gap-6">
+          <nav className="flex items-center gap-3 sm:gap-6">
             <Link
               href="/"
-              className="text-xs sm:text-sm font-bold uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors"
+              className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors"
             >
               Markets
             </Link>
             <Link
               href="/portfolio"
-              className="text-xs sm:text-sm font-bold uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors"
+              className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors"
             >
               Portfolio
             </Link>
           </nav>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-1.5 sm:gap-4 overflow-hidden">
           {user && (
             <Link
               href="/portfolio"
-              className="flex flex-col items-end mr-1 sm:mr-2 hover:opacity-80 transition-opacity"
+              className="flex flex-col items-end mr-0.5 sm:mr-2 hover:opacity-80 transition-opacity flex-shrink-0"
             >
-              <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 transition-colors">
+              <p className="text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 transition-colors">
                 Balance
               </p>
-              <p className="text-xs sm:text-sm font-bold text-slate-900 transition-colors tabular-nums">
+              <p className="text-[10px] sm:text-sm font-bold text-slate-900 transition-colors tabular-nums">
                 {formatCurrency(balanceUsd)}
               </p>
             </Link>
           )}
 
           {user ? (
-            <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-slate-200">
-              <Link href="/profile" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity group/avatar">
-                <div className="flex flex-col items-end hidden xs:flex">
+            <div className="flex items-center gap-1.5 sm:gap-3 pl-1.5 sm:pl-4 border-l border-slate-200">
+              <Link href="/profile" className="flex items-center gap-1.5 sm:gap-3 hover:opacity-80 transition-opacity group/avatar flex-shrink-0">
+                <div className="flex flex-col items-end hidden md:flex">
                   <p className="text-xs font-bold text-slate-900 leading-none transition-colors">
                     {user.name}
                   </p>
@@ -86,23 +86,17 @@ export default function Header() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="rounded-full bg-white px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm"
+                className="rounded-full bg-white px-2 sm:px-3 py-1 sm:py-1.5 text-[8px] sm:text-xs font-bold uppercase tracking-widest text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm flex-shrink-0"
               >
                 Logout
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-slate-200">
-              <Link href="/profile" className="hidden xs:flex flex-col items-end hover:opacity-80 transition-opacity">
-                <p className="text-xs font-bold text-slate-900 leading-none transition-colors">
-                  Guest
-                </p>
-                <p className="text-[10px] font-medium text-slate-500 mt-1 transition-colors">
-                  Demo Mode
-                </p>
-              </Link>
-              <Link href="/profile" className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 transition-all hover:ring-2 hover:ring-slate-900 hover:ring-offset-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div className="flex items-center gap-1.5 sm:gap-3 pl-1.5 sm:pl-4 border-l border-slate-200">
+              <Link href="/profile" className="flex items-center gap-1.5 sm:gap-3 hover:opacity-80 transition-opacity group/avatar flex-shrink-0">
+                <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 overflow-hidden transition-all group-hover/avatar:ring-2 group-hover/avatar:ring-slate-900 group-hover/avatar:ring-offset-2">
+                  <span className="text-xs font-bold text-slate-400">?</span>
+                </div>
               </Link>
             </div>
           )}

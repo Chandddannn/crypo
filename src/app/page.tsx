@@ -258,26 +258,27 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="glass-panel overflow-hidden transition-colors">
-          <div className="flex items-center justify-between border-b border-slate-200/70 px-6 py-4 transition-colors">
+        <section className="glass-panel overflow-hidden transition-colors mx-auto w-full max-w-[calc(100vw-2rem)] sm:max-w-none">
+          <div className="flex items-center justify-between border-b border-slate-200/70 px-4 sm:px-6 py-4 transition-colors">
             <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] transition-colors">
               <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.2)]" />
-              Live Market Dashboard
+              <span className="hidden xs:inline">Live Market Dashboard</span>
+              <span className="xs:hidden">Live Market</span>
             </div>
-            <span className="rounded-md bg-emerald-50 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-emerald-700 ring-1 ring-emerald-100 transition-colors">
-              WebSocket · Realtime
+            <span className="rounded-md bg-emerald-50 px-2 sm:px-3 py-1 text-[9px] font-black uppercase tracking-widest text-emerald-700 ring-1 ring-emerald-100 transition-colors">
+              WebSocket
             </span>
           </div>
 
-          <div className="max-h-[640px] overflow-auto">
-            <table className="min-w-full text-left text-sm">
+          <div className="max-h-[640px] overflow-x-auto overflow-y-auto">
+            <table className="min-w-full text-left text-sm table-fixed sm:table-auto">
               <thead className="sticky top-0 z-10 bg-slate-50/90 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 backdrop-blur transition-colors">
                 <tr>
-                  <th className="px-6 py-4">Rank</th>
-                  <th className="px-3 py-4">Asset</th>
-                  <th className="px-3 py-4">Symbol</th>
-                  <th className="px-3 py-4 text-right">Live Price</th>
-                  <th className="px-6 py-4 text-right">24h Change</th>
+                  <th className="px-4 sm:px-6 py-4 w-12 sm:w-20">Rank</th>
+                  <th className="px-2 sm:px-3 py-4 w-auto">Asset</th>
+                  <th className="px-2 sm:px-3 py-4 w-16 sm:w-24">Sym</th>
+                  <th className="px-2 sm:px-3 py-4 text-right w-24 sm:w-32">Price</th>
+                  <th className="px-4 sm:px-6 py-4 text-right w-24 sm:w-32">24h</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100/80 transition-colors">
@@ -285,7 +286,7 @@ export default function Home() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="px-6 py-16 text-center"
+                      className="px-4 sm:px-6 py-16 text-center"
                     >
                       <div className="flex flex-col items-center gap-3">
                         <span className="h-8 w-8 animate-pulse rounded-full bg-slate-200" />
@@ -307,40 +308,40 @@ export default function Home() {
                         onClick={() => router.push(`/coin/${asset.id}`)}
                         className="group cursor-pointer bg-white text-sm text-slate-700 transition-all hover:bg-slate-50/80"
                       >
-                        <td className="whitespace-nowrap px-6 py-4 text-[10px] font-black text-slate-400 transition-colors">
+                        <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-[10px] font-black text-slate-400 transition-colors">
                           #{asset.rank}
                         </td>
-                        <td className="px-3 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-slate-100 text-[10px] font-black text-slate-600 transition-colors">
+                        <td className="px-2 sm:px-3 py-4 overflow-hidden">
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg sm:rounded-xl bg-slate-100 text-[10px] font-black text-slate-600 transition-colors">
                               {asset.image ? (
                                 <Image
                                   src={asset.image}
                                   alt={`${asset.name} logo`}
-                                  width={32}
-                                  height={32}
-                                  className="h-8 w-8 object-contain"
+                                  width={24}
+                                  height={24}
+                                  className="h-6 w-6 sm:h-8 sm:w-8 object-contain"
                                 />
                               ) : (
-                                <span className="uppercase tracking-tighter">{asset.symbol.slice(0, 4)}</span>
+                                <span className="uppercase tracking-tighter">{asset.symbol.slice(0, 3)}</span>
                               )}
                             </div>
-                            <div>
-                              <p className="text-sm font-black text-slate-900 transition-colors">
+                            <div className="min-w-0">
+                              <p className="truncate text-xs sm:text-sm font-black text-slate-900 transition-colors">
                                 {asset.name}
                               </p>
-                              <p className="text-[10px] font-bold text-slate-400 tabular-nums transition-colors">
+                              <p className="hidden sm:block text-[10px] font-bold text-slate-400 tabular-nums transition-colors">
                                 Mkt Cap: {formatCurrency(asset.marketCapUsd, 0)}
                               </p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 py-4">
-                          <span className="rounded-md bg-slate-100 px-2 py-1 text-[9px] font-black text-slate-600 uppercase tracking-widest transition-colors group-hover:bg-slate-200">
+                        <td className="px-2 sm:px-3 py-4">
+                          <span className="rounded-md bg-slate-100 px-1.5 sm:px-2 py-0.5 sm:py-1 text-[8px] sm:text-[9px] font-black text-slate-600 uppercase tracking-widest transition-colors group-hover:bg-slate-200">
                             {asset.symbol}
                           </span>
                         </td>
-                        <td className="px-3 py-4 text-right">
+                        <td className="px-2 sm:px-3 py-4 text-right">
                           <motion.div
                             initial={false}
                             animate={
@@ -357,17 +358,17 @@ export default function Home() {
                                     scale: 1,
                                   }
                             }
-                            className="inline-block rounded-md px-2 py-1 font-black text-sm text-slate-900 tabular-nums transition-colors"
+                            className="inline-block rounded-md px-1 sm:px-2 py-0.5 sm:py-1 font-black text-xs sm:text-sm text-slate-900 tabular-nums transition-colors"
                           >
                             {formatCurrency(
                               livePriceValue,
-                              livePriceValue < 1 ? 5 : 2,
+                              livePriceValue < 1 ? 4 : 2,
                             )}
                           </motion.div>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-4 sm:px-6 py-4 text-right">
                           <span
-                            className={`inline-flex min-w-[80px] items-center justify-end rounded-md px-2.5 py-1 text-[10px] font-black tabular-nums transition-colors ${
+                            className={`inline-flex min-w-[60px] sm:min-w-[80px] items-center justify-end rounded-md px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-black tabular-nums transition-colors ${
                               pct >= 0
                                 ? "bg-emerald-50 text-emerald-700"
                                 : "bg-rose-50 text-rose-700"
