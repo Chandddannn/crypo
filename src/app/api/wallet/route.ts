@@ -2,31 +2,64 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+// Vercel serverless functions have a read-only filesystem except for /tmp
+// We will use /tmp for persistence during the session, but for real persistence 
+// on Vercel, a database (KV, Postgres, etc.) is required.
+// This fix allows the app to function without crashing on Vercel.
+const isVercel = process.env.VERCEL === "1";
+const DATA_DIR = isVercel ? "/tmp" : path.join(process.cwd(), "data");
 const WALLETS_FILE = path.join(DATA_DIR, "wallets.json");
 
+// Fallback in-memory store for Vercel sessions if /tmp is wiped
+let memoryWallets: any = null;
+
 function ensureStore() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(WALLETS_FILE)) {
-    fs.writeFileSync(WALLETS_FILE, "{}", "utf8");
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(WALLETS_FILE)) {
+      // Try to seed from local data if it exists during build
+      const localDataPath = path.join(process.cwd(), "data", "wallets.json");
+      if (fs.existsSync(localDataPath)) {
+        const localData = fs.readFileSync(localDataPath, "utf8");
+        fs.writeFileSync(WALLETS_FILE, localData, "utf8");
+      } else {
+        fs.writeFileSync(WALLETS_FILE, "{}", "utf8");
+      }
+    }
+  } catch (e) {
+    console.warn("Filesystem is read-only, using memory store fallback");
   }
 }
 
 function readWallets() {
+  if (isVercel && memoryWallets) return memoryWallets;
+  
   ensureStore();
-  const raw = fs.readFileSync(WALLETS_FILE, "utf8");
   try {
-    return JSON.parse(raw);
-  } catch {
-    return {};
+    if (fs.existsSync(WALLETS_FILE)) {
+      const raw = fs.readFileSync(WALLETS_FILE, "utf8");
+      const data = JSON.parse(raw);
+      if (isVercel) memoryWallets = data;
+      return data;
+    }
+  } catch (e) {
+    console.error("Read failed:", e);
   }
+  return memoryWallets || {};
 }
 
 function writeWallets(wallets: any) {
-  ensureStore();
-  fs.writeFileSync(WALLETS_FILE, JSON.stringify(wallets, null, 2), "utf8");
+  if (isVercel) memoryWallets = wallets;
+  
+  try {
+    ensureStore();
+    fs.writeFileSync(WALLETS_FILE, JSON.stringify(wallets, null, 2), "utf8");
+  } catch (e) {
+    // On Vercel, this might fail if /tmp is full or inaccessible
+    console.warn("Write failed, data held in memory only:", e);
+  }
 }
 
 export async function GET() {
