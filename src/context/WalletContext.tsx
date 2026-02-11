@@ -10,7 +10,11 @@ import React, {
   useState,
 } from "react";
 import { getBinanceSymbol, getCoinId } from "@/utils/binance";
-import { executeTrade, Position as EnginePosition, TradeRequest } from "@/utils/tradeEngine";
+import {
+  executeTrade,
+  Position as EnginePosition,
+  TradeRequest,
+} from "@/utils/tradeEngine";
 
 type TradeType = "BUY" | "SELL";
 
@@ -46,14 +50,17 @@ export interface WalletState {
   user?: UserProfile;
   ownerName?: string;
   // Map of userId -> wallet data
-  userWallets: Record<string, {
-    balanceUsd: number;
-    positions: Record<string, Position>;
-    trades: Trade[];
-  }>;
+  userWallets: Record<
+    string,
+    {
+      balanceUsd: number;
+      positions: Record<string, Position>;
+      trades: Trade[];
+    }
+  >;
 }
 
-interface WalletContextValue extends Omit<WalletState, 'userWallets'> {
+interface WalletContextValue extends Omit<WalletState, "userWallets"> {
   balanceUsd: number;
   positions: Record<string, Position>;
   trades: Trade[];
@@ -154,7 +161,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         const response = await fetch("/api/wallet");
         if (response.ok) {
           const userWallets = await response.json();
-          
+
           // If we have a user but no wallet for them in the API yet,
           // ensure they get the default balance
           const finalWallets = { ...userWallets };
@@ -235,10 +242,12 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     const positionIds = Object.keys(activeWallet.positions);
     // Include some default popular coins if not already held
     const defaultIds = ["bitcoin", "ethereum", "solana"];
-    const allIds = Array.from(new Set([...positionIds, ...defaultIds, ...Array.from(subscribedIds)]));
+    const allIds = Array.from(
+      new Set([...positionIds, ...defaultIds, ...Array.from(subscribedIds)]),
+    );
 
     const symbols = allIds
-      .map(id => getBinanceSymbol(id))
+      .map((id) => getBinanceSymbol(id))
       .filter((s): s is string => !!s);
 
     if (!symbols.length) return;
@@ -251,15 +260,20 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
       ws.current.close();
     }
 
-    const streams = symbols.map(s => `${s.toLowerCase()}@trade`).join("/");
+    const streams = symbols.map((s) => `${s.toLowerCase()}@trade`).join("/");
     // Binance combined streams use /stream?streams= format
-    const url = symbols.length > 1 
-      ? `wss://stream.binance.com/stream?streams=${streams}`
-      : `wss://stream.binance.com/ws/${streams}`;
+    const url =
+      symbols.length > 1
+        ? `wss://stream.binance.com/stream?streams=${streams}`
+        : `wss://stream.binance.com/ws/${streams}`;
 
     const connect = () => {
       // Don't connect if the component is unmounting
-      if (ws.current?.readyState === WebSocket.OPEN || ws.current?.readyState === WebSocket.CONNECTING) return;
+      if (
+        ws.current?.readyState === WebSocket.OPEN ||
+        ws.current?.readyState === WebSocket.CONNECTING
+      )
+        return;
 
       console.log("Connecting to Binance WebSocket:", url);
       const socket = new WebSocket(url);
@@ -279,9 +293,9 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
             const symbol = data.s.toLowerCase();
             const price = parseFloat(data.p);
             const coinId = getCoinId(symbol);
-            
+
             if (coinId) {
-              setPrices(prev => {
+              setPrices((prev) => {
                 if (prev[coinId] === price) return prev;
                 return { ...prev, [coinId]: price };
               });
@@ -298,7 +312,9 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
       };
 
       socket.onclose = (event) => {
-        console.log(`Binance WebSocket Closed: Code ${event.code}, Reason: ${event.reason || "No reason"}`);
+        console.log(
+          `Binance WebSocket Closed: Code ${event.code}, Reason: ${event.reason || "No reason"}`,
+        );
         // Reconnect after 5 seconds if closed unexpectedly (not by our code)
         // Code 1000 is normal closure
         if (event.code !== 1000 && ws.current === socket) {
@@ -316,7 +332,10 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         ws.current.close();
       }
     };
-  }, [Object.keys(activeWallet.positions).join(","), Array.from(subscribedIds).join(",")]);
+  }, [
+    Object.keys(activeWallet.positions).join(","),
+    Array.from(subscribedIds).join(","),
+  ]);
 
   const updatePrice = useCallback((assetId: string, priceUsd: number) => {
     setPrices((prev) => {
@@ -345,7 +364,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         };
 
         const currentPosition = currentWallet.positions[params.assetId];
-        
+
         // Determine USD amount to spend:
         // 1. If explicit quantity provided, calculate USD amount based on current price.
         // 2. If usdAmount provided, use it directly.
@@ -367,8 +386,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
             assetId: params.assetId,
             symbol: params.symbol,
             name: params.name,
-            amount: usdToSpend
-          }
+            amount: usdToSpend,
+          },
         );
 
         if (!result.success) {
@@ -426,7 +445,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         const currentPosition = currentWallet.positions[params.assetId];
         if (!currentPosition) return prev;
 
-        // Determine quantity to sell: 
+        // Determine quantity to sell:
         // 1. If explicit quantity provided (e.g. "Sell All"), use it.
         // 2. If usdAmount provided, calculate quantity based on current price.
         let quantityToSell = 0;
@@ -447,8 +466,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
             assetId: params.assetId,
             symbol: params.symbol,
             name: params.name,
-            amount: quantityToSell
-          }
+            amount: quantityToSell,
+          },
         );
 
         if (!result.success) {
@@ -562,6 +581,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = useCallback(() => {
     setUser(undefined);
+    setLastSession(null);
   }, [setUser]);
 
   const value: WalletContextValue | null = useMemo(
@@ -624,4 +644,3 @@ export function useWallet() {
   }
   return ctx;
 }
-
