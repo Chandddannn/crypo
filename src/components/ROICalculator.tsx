@@ -37,9 +37,9 @@ export function ROICalculator({
       <div className="p-6 flex-1 flex flex-col gap-6">
         <div className="space-y-4">
           <div>
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-300">Investment Amount (USD)</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 ">Investment Amount (USD)</label>
             <div className="relative mt-2">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-slate-400 dark:text-slate-200">$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-slate-600 ">$</span>
               <input
                 type="number"
                 value={roiAmount}
@@ -49,7 +49,7 @@ export function ROICalculator({
             </div>
           </div>
           <div>
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-300">Time Period</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 ">Time Period</label>
             <div className="mt-2 flex flex-wrap gap-2">
               {ranges.map((r) => (
                 <button
@@ -68,7 +68,7 @@ export function ROICalculator({
 
         {calculatedRoi && (
           <div className="mt-auto rounded-2xl bg-slate-900 dark:bg-white/5 p-6 text-white shadow-xl shadow-slate-900/20 dark:shadow-none transition-colors">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 dark:text-slate-400">Estimated Value</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60 ">Estimated Value</p>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="text-3xl font-black tabular-nums text-white">{formatCurrency(calculatedRoi.finalValue)}</span>
               <span className={`text-xs font-black ${calculatedRoi.profit >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
@@ -77,11 +77,11 @@ export function ROICalculator({
             </div>
             <div className="mt-6 space-y-3 border-t border-white/10 pt-4">
               <div className="flex justify-between text-[10px] font-black uppercase tracking-wider">
-                <span className="text-white/40 dark:text-slate-400">Initial Cost</span>
+                <span className="text-white/60 ">Initial Cost</span>
                 <span className="text-white/80 dark:text-slate-300">{formatCurrency(roiAmount)}</span>
               </div>
               <div className="flex justify-between text-[10px] font-black uppercase tracking-wider">
-                <span className="text-white/40 dark:text-slate-400">Total Profit</span>
+                <span className="text-white/60 ">Total Profit</span>
                 <span className={`font-black ${calculatedRoi.profit >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
                   {formatCurrency(calculatedRoi.profit)}
                 </span>

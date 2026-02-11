@@ -121,7 +121,7 @@ export default function ProfilePage() {
         <div className="flex items-center justify-between">
           <button 
             onClick={() => router.push("/")}
-            className="group flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 transition-all hover:text-slate-900"
+            className="group flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-all hover:text-slate-900"
           >
             <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition-all group-hover:-translate-x-1 group-hover:bg-slate-50">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -176,15 +176,15 @@ export default function ProfilePage() {
               </div>
               
               <h2 className="text-xl font-black text-slate-900">{user.name}</h2>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1.5">{user.email}</p>
+              <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1.5">{user.email}</p>
               
               <div className="mt-8 pt-8 border-t border-slate-100/50 grid grid-cols-2 gap-4">
                 <div className="text-left">
-                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider">Net Worth</p>
+                  <p className="text-[9px] font-black text-slate-600 uppercase tracking-wider">Net Worth</p>
                   <p className="text-sm font-black text-slate-900 tabular-nums">{formatCurrency(balanceUsd)}</p>
                 </div>
                 <div className="text-left">
-                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider">Activity</p>
+                  <p className="text-[9px] font-black text-slate-600 uppercase tracking-wider">Activity</p>
                   <p className="text-sm font-black text-slate-900 tabular-nums">{totalTrades} Trades</p>
                 </div>
               </div>
@@ -201,14 +201,14 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Buy Orders</span>
+                    <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Buy Orders</span>
                   </div>
                   <span className="text-xs font-black text-slate-900">{buyTrades}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className="h-2 w-2 rounded-full bg-rose-500" />
-                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Sell Orders</span>
+                    <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Sell Orders</span>
                   </div>
                   <span className="text-xs font-black text-slate-900">{sellTrades}</span>
                 </div>
@@ -279,7 +279,7 @@ export default function ProfilePage() {
                       placeholder="https://images.unsplash.com/..."
                       className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-bold text-slate-900 outline-none ring-sky-500/10 transition-all focus:border-sky-500 focus:ring-8 disabled:bg-slate-50 disabled:text-slate-500"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600">
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                     </div>
                   </div>
@@ -301,7 +301,7 @@ export default function ProfilePage() {
                         setName(user.name);
                         setAvatarUrl(user.avatarUrl || "");
                       }}
-                      className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-slate-900 transition-colors"
+                      className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-slate-900 transition-colors"
                     >
                       Cancel
                     </button>
@@ -336,7 +336,7 @@ export default function ProfilePage() {
                     </div>
                     <div>
                       <p className="text-xs font-black text-slate-900 uppercase tracking-wider">Password</p>
-                      <p className="text-[10px] text-slate-500">Updated 90d ago</p>
+                      <p className="text-[10px] text-slate-600">Updated 90d ago</p>
                     </div>
                   </div>
                   <button className="text-[10px] font-black uppercase tracking-widest text-sky-600 hover:text-sky-700 transition-colors">Update</button>
@@ -344,7 +344,7 @@ export default function ProfilePage() {
                 
                 <div className="group flex items-center justify-between p-5 rounded-2xl bg-white ring-1 ring-slate-100 transition-all hover:ring-slate-200 hover:shadow-lg hover:shadow-slate-100/50">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 group-hover:text-emerald-500 transition-colors">
+                    <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 group-hover:text-emerald-500 transition-colors">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
                     </div>
                     <div>

@@ -10,10 +10,15 @@ import { AssetHeader } from "@/components/AssetHeader";
 import { PriceChart } from "@/components/PriceChart";
 import { ROICalculator } from "@/components/ROICalculator";
 import { WalletQuickView } from "@/components/WalletQuickView";
+import { MobileActionToolbar } from "@/components/MobileActionToolbar";
 import { useCoinDetails } from "@/hooks/useCoinDetails";
+import { useState } from "react";
 
 export default function CoinDetailPage() {
   const params = useParams<{ id: string }>();
+  const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
+  const [tradeMode, setTradeMode] = useState<"BUY" | "SELL">("BUY");
+
   const {
     asset,
     range,
@@ -103,6 +108,10 @@ export default function CoinDetailPage() {
               formatXAxis={formatXAxis} 
             />
 
+            <div className="lg:hidden">
+              <WalletQuickView position={position} symbol={asset.symbol} unrealizedPnl={unrealizedPnl} />
+            </div>
+
             <div className="grid gap-8">
               <TradeHistory trades={trades} assetSymbol={asset.symbol} />
               
@@ -154,7 +163,7 @@ export default function CoinDetailPage() {
             )}
           </div>
 
-          <aside>
+          <aside className="hidden lg:block">
             <div className="sticky top-12 space-y-8">
               <TradingCard 
                 assetId={asset.id} 
@@ -167,6 +176,41 @@ export default function CoinDetailPage() {
           </aside>
         </div>
       </div>
+
+      <MobileActionToolbar 
+        symbol={asset.symbol} 
+        onBuyClick={() => {
+          setTradeMode("BUY");
+          setIsTradeModalOpen(true);
+        }}
+        onSellClick={() => {
+          setTradeMode("SELL");
+          setIsTradeModalOpen(true);
+        }}
+      />
+
+      {/* Trade Modal for Mobile */}
+      {isTradeModalOpen && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-900/60 backdrop-blur-md lg:hidden">
+          <div 
+            className="absolute inset-0" 
+            onClick={() => setIsTradeModalOpen(false)} 
+          />
+          <div className="relative w-full max-h-[90vh] overflow-hidden rounded-t-[32px] bg-white p-1 animate-in slide-in-from-bottom duration-300 flex flex-col">
+            <div className="mx-auto mb-2 mt-3 h-1.5 w-12 rounded-full bg-slate-200 flex-shrink-0" />
+            <div className="flex-1 overflow-hidden">
+              <TradingCard 
+                assetId={asset.id} 
+                symbol={asset.symbol} 
+                name={asset.name} 
+                currentPriceUsd={currentPrice ?? asset.market_data.current_price.usd}
+                initialMode={tradeMode}
+                onClose={() => setIsTradeModalOpen(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

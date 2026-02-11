@@ -29,10 +29,10 @@ export function PriceChart({
 }: PriceChartProps) {
   return (
     <div className="glass-panel overflow-hidden transition-colors focus:outline-none focus:ring-0">
-      <div className="flex flex-col gap-4 border-b border-slate-100/50 dark:border-white/10 px-4 sm:px-6 py-4 sm:flex-row sm:items-center sm:justify-between transition-colors">
+      <div className="flex flex-col gap-4 border-b border-slate-100/50 px-4 sm:px-6 py-4 sm:flex-row sm:items-center sm:justify-between transition-colors">
         <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-slate-900 dark:bg-white transition-colors" />
-          <h2 className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-200 transition-colors">
+          <div className="h-2 w-2 rounded-full bg-slate-900 transition-colors" />
+          <h2 className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 transition-colors">
             Price Performance
           </h2>
         </div>
@@ -56,22 +56,22 @@ export function PriceChart({
           {chartLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="flex flex-col items-center gap-3">
-                <span className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 dark:border-white/10 border-t-slate-900 dark:border-t-white transition-colors" />
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-300 transition-colors">Loading Market Data...</p>
+                <span className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-slate-900 transition-colors" />
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors">Loading Market Data...</p>
               </div>
             </div>
           ) : chartError ? (
             <div className="flex h-full items-center justify-center">
               <div className="flex flex-col items-center gap-4 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-colors">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-50 text-rose-500 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 </div>
-                <p className="max-w-[280px] text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-300 leading-relaxed transition-colors">
+                <p className="max-w-[280px] text-[10px] font-black uppercase tracking-widest text-slate-500 leading-relaxed transition-colors">
                   {chartError}
                 </p>
                 <button 
                   onClick={() => loadHistory(true)} 
-                  className="group flex items-center gap-2 rounded-full bg-slate-900 dark:bg-white px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white dark:text-slate-950 transition-all hover:bg-slate-800 dark:hover:bg-slate-200 shadow-lg shadow-slate-200 dark:shadow-none active:scale-95"
+                  className="group flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-slate-800 shadow-lg shadow-slate-200 active:scale-95"
                 >
                   <svg className="transition-transform group-hover:rotate-180" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
                   Try Again
@@ -80,18 +80,18 @@ export function PriceChart({
             </div>
           ) : chartData.length === 0 ? (
             <div className="flex h-full items-center justify-center">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-300 italic transition-colors">No data points available for this range</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic transition-colors">No data points available for this range</p>
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--chart-fill)" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="var(--chart-fill)" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--glass-border)" opacity={0.5} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" opacity={0.5} />
                 <XAxis 
                   dataKey="time" 
                   tickLine={false} 
@@ -99,40 +99,36 @@ export function PriceChart({
                   tickMargin={12} 
                   minTickGap={range === "24H" ? 60 : 40} 
                   tickFormatter={formatXAxis} 
-                  tick={{ fontSize: 10, fontWeight: 900, fill: "currentColor" }}
-                  className="text-slate-500"
+                  tick={{ fontSize: 10, fontWeight: 900, fill: "#64748b" }}
                 />
                 <YAxis 
                   orientation="right"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  tick={{ fontSize: 10, fontWeight: 900, fill: "currentColor" }}
-                  className="text-slate-500"
+                  tick={{ fontSize: 10, fontWeight: 900, fill: "#64748b" }}
                   tickFormatter={(val) => formatCurrency(val, val < 1 ? 4 : 2)}
                   domain={["auto", "auto"]}
                 />
                 <Tooltip
-                  cursor={{ stroke: "var(--chart-stroke)", strokeWidth: 1.5, strokeDasharray: "4 4" }}
+                  cursor={{ stroke: "#0ea5e9", strokeWidth: 1.5, strokeDasharray: "4 4" }}
                   contentStyle={{ 
                     borderRadius: 16, 
                     border: "none", 
-                    boxShadow: "var(--glass-shadow)", 
+                    boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)", 
                     padding: "12px 16px",
-                    backgroundColor: "var(--tooltip-bg)",
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
                     backdropFilter: "blur(12px)",
-                    color: "var(--tooltip-text)",
-                    borderWidth: 0
+                    color: "#0f172a",
                   }}
                   itemStyle={{
-                    color: "var(--tooltip-text)",
+                    color: "#0f172a",
                     fontSize: "12px",
                     fontWeight: "800",
                     textTransform: "uppercase"
                   }}
                   labelStyle={{
-                    color: "var(--tooltip-text)",
-                    opacity: 0.6,
+                    color: "#64748b",
                     fontSize: "10px",
                     fontWeight: "700",
                     marginBottom: "4px"
@@ -166,11 +162,11 @@ export function PriceChart({
                   name="Live Price"
                   type="monotone" 
                   dataKey="price" 
-                  stroke="var(--chart-stroke)" 
+                  stroke="#0ea5e9" 
                   strokeWidth={2.5} 
                   fill="url(#priceGradient)" 
                   isAnimationActive={false}
-                  activeDot={{ r: 4, strokeWidth: 0, fill: "var(--chart-stroke)" }}
+                  activeDot={{ r: 4, strokeWidth: 0, fill: "#0ea5e9" }}
                 />
               </AreaChart>
             </ResponsiveContainer>
