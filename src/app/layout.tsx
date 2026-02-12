@@ -4,6 +4,7 @@ import "./globals.css";
 import WalletProviderClient from "@/components/WalletProviderClient";
 import Header from "@/components/Header";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,10 +23,26 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin");
+
+  // Suppress hydration warnings from browser extensions
+  useEffect(() => {
+    const originalError = console.error;
+    console.error = (...args) => {
+      if (
+        typeof args[0] === "string" &&
+        args[0].includes("data-new-gr-c-s-check-loaded")
+      ) {
+        return;
+      }
+      originalError.apply(console, args);
+    };
+  }, []);
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden w-full bg-white relative min-h-screen`}
+        suppressHydrationWarning
       >
         {/* Global Abstract Cat Decorations */}
         <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
