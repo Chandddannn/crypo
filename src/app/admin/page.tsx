@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 interface Trade {
   id: string;
@@ -51,7 +49,6 @@ interface Stats {
 }
 
 export default function AdminDashboard() {
-  const router = useRouter();
   const [users, setUsers] = useState<UserData[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -71,6 +68,21 @@ export default function AdminDashboard() {
       setIsAuthenticated(true);
     }
   }, []);
+
+  // Clear session when user closes tab or navigates away
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem("admin_authenticated");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -124,7 +136,9 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem("admin_authenticated");
-    router.push("/");
+
+    // Clear admin session and reload to ensure clean state
+    window.location.href = "/";
   };
 
   const handleDeleteUser = async (userId: string) => {
@@ -199,15 +213,6 @@ export default function AdminDashboard() {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <Link
-              href="/"
-              className="text-blue-600 hover:text-blue-700 text-sm transition-colors"
-            >
-              ← Back to Home
-            </Link>
-          </div>
-
           <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <p className="text-xs text-yellow-800">
               <strong>Demo Password:</strong>{" "}
@@ -240,12 +245,6 @@ export default function AdminDashboard() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <Link
-                href="/"
-                className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4 transition-colors"
-              >
-                ← Back to Home
-              </Link>
               <h1 className="text-4xl font-bold text-gray-800 mb-2">
                 🛡️ Admin Dashboard
               </h1>
