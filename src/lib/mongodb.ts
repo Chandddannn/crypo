@@ -2,14 +2,6 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// During build time, we may not have the MONGODB_URI yet
-// Only throw error when actually trying to connect
-if (!MONGODB_URI && process.env.NODE_ENV !== "production") {
-  console.warn(
-    "⚠️ MONGODB_URI not defined. Database features will not work until you set it in .env.local",
-  );
-}
-
 /**
  * Global is used here to maintain a cached connection across hot reloads
  * in development. This prevents connections growing exponentially
@@ -32,8 +24,13 @@ if (!global.mongoose) {
 
 async function dbConnect(): Promise<typeof mongoose> {
   if (!MONGODB_URI) {
+    console.error("❌ MONGODB_URI is not defined!");
+    console.error(
+      "Available env vars:",
+      Object.keys(process.env).filter((k) => k.includes("MONGO")),
+    );
     throw new Error(
-      "Please define the MONGODB_URI environment variable inside .env.local",
+      "MONGODB_URI environment variable is not set. Please add it in Vercel dashboard or .env.local",
     );
   }
 
