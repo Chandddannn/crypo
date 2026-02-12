@@ -15,6 +15,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 
+    console.log("📥 GET /api/wallet - userId:", userId);
+
     if (!userId) {
       return NextResponse.json(
         { error: "User ID is required" },
@@ -25,8 +27,19 @@ export async function GET(req: Request) {
     // Fetch wallet for specific user
     let wallet = await Wallet.findOne({ userId });
 
+    console.log("💾 Found wallet in DB:", wallet ? "YES" : "NO");
+    if (wallet) {
+      console.log(
+        "💰 Balance:",
+        wallet.balanceUsd,
+        "Trades:",
+        wallet.trades?.length || 0,
+      );
+    }
+
     // If wallet doesn't exist, create a new one with default balance
     if (!wallet) {
+      console.log("🆕 Creating new wallet for user:", userId);
       wallet = await Wallet.create({
         userId,
         balanceUsd: 10000,
@@ -44,7 +57,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(walletData);
   } catch (error) {
-    console.error("Wallet fetch error:", error);
+    console.error("❌ Wallet fetch error:", error);
     return NextResponse.json(
       { error: "Failed to fetch wallet" },
       { status: 500 },
@@ -58,6 +71,14 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { userId, walletData } = body;
+
+    console.log("📤 POST /api/wallet - userId:", userId);
+    console.log("💰 Saving balance:", walletData?.balanceUsd);
+    console.log("📊 Saving trades count:", walletData?.trades?.length || 0);
+    console.log(
+      "🏦 Saving positions count:",
+      Object.keys(walletData?.positions || {}).length,
+    );
 
     if (!userId) {
       return NextResponse.json(
@@ -88,6 +109,11 @@ export async function POST(req: Request) {
       },
     );
 
+    console.log(
+      "✅ Wallet saved successfully! Trades in DB:",
+      wallet.trades?.length || 0,
+    );
+
     return NextResponse.json({
       success: true,
       wallet: {
@@ -97,7 +123,7 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    console.error("Wallet update error:", error);
+    console.error("❌ Wallet update error:", error);
     return NextResponse.json(
       { error: "Failed to update wallet" },
       { status: 500 },

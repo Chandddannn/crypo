@@ -168,11 +168,19 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Load wallet from MongoDB API if user is logged in
         if (currentUser?.id) {
+          console.log("🔄 Loading wallet for user:", currentUser.id);
           const response = await fetch(`/api/wallet?userId=${currentUser.id}`);
           if (response.ok) {
             const walletData = await response.json();
+            console.log(
+              "✅ Wallet loaded - Balance:",
+              walletData.balanceUsd,
+              "Trades:",
+              walletData.trades?.length || 0,
+            );
             finalWallets[currentUser.id] = walletData;
           } else {
+            console.log("⚠️ Wallet API error, using defaults");
             // If wallet doesn't exist, it will be created by the API
             finalWallets[currentUser.id] = {
               balanceUsd: DEFAULT_BALANCE,
@@ -206,7 +214,13 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const saveData = async () => {
       try {
-        await fetch("/api/wallet", {
+        console.log(
+          "💾 Saving wallet - Balance:",
+          activeWalletData.balanceUsd,
+          "Trades:",
+          activeWalletData.trades?.length || 0,
+        );
+        const response = await fetch("/api/wallet", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -214,8 +228,13 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
             walletData: activeWalletData,
           }),
         });
+        if (response.ok) {
+          console.log("✅ Wallet saved successfully");
+        } else {
+          console.error("❌ Failed to save wallet:", await response.text());
+        }
       } catch (error) {
-        console.error("Failed to persist wallet state:", error);
+        console.error("❌ Failed to persist wallet state:", error);
       }
     };
 
