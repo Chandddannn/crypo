@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useWallet } from "@/context/WalletContext";
+import CoinSearch from "@/components/CoinSearch";
 
 interface Asset {
   id: string;
@@ -58,20 +59,22 @@ const DEMO_ASSETS: Asset[] = [
 
 export default function Home() {
   const router = useRouter();
-  const { 
-    balanceUsd, 
-    updatePrice, 
-    ownerName, 
-    user, 
-    prices, 
-    subscribeToPrice, 
-    unsubscribeFromPrice 
+  const {
+    balanceUsd,
+    updatePrice,
+    ownerName,
+    user,
+    prices,
+    subscribeToPrice,
+    unsubscribeFromPrice,
   } = useWallet();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [priceFlashes, setPriceFlashes] = useState<PriceFlashMap>({});
-  const [loadingBatchLabel, setLoadingBatchLabel] = useState<string | null>(null);
+  const [loadingBatchLabel, setLoadingBatchLabel] = useState<string | null>(
+    null,
+  );
 
   const lastPricesRef = useRef<Record<string, number>>({});
 
@@ -90,7 +93,7 @@ export default function Home() {
         if (!res.ok) {
           throw new Error("Failed to load Binance markets");
         }
-        const normalized = await res.json() as Asset[];
+        const normalized = (await res.json()) as Asset[];
 
         if (!cancelled) {
           // Prime wallet prices and lastPricesRef
@@ -130,13 +133,13 @@ export default function Home() {
   // Subscribe to all assets for live prices
   useEffect(() => {
     if (assets.length === 0) return;
-    
-    assets.forEach(asset => {
+
+    assets.forEach((asset) => {
       subscribeToPrice(asset.id);
     });
 
     return () => {
-      assets.forEach(asset => {
+      assets.forEach((asset) => {
         unsubscribeFromPrice(asset.id);
       });
     };
@@ -167,7 +170,7 @@ export default function Home() {
           });
         }, 450);
       }
-      
+
       // Update ref for next comparison
       lastPricesRef.current[id] = newPrice;
     });
@@ -218,9 +221,7 @@ export default function Home() {
 
   const sortedAssets = useMemo(
     () =>
-      [...assets].sort(
-        (a, b) => parseInt(a.rank, 10) - parseInt(b.rank, 10),
-      ),
+      [...assets].sort((a, b) => parseInt(a.rank, 10) - parseInt(b.rank, 10)),
     [assets],
   );
 
@@ -244,7 +245,7 @@ export default function Home() {
     <main className="min-h-screen px-4 py-8 md:px-10 lg:px-16 bg-white transition-colors">
       <div className="mx-auto max-w-6xl space-y-8">
         <header className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <div>
+          <div className="w-full">
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-sky-500 transition-colors">
               Virtual Crypto Desk
             </p>
@@ -257,6 +258,11 @@ export default function Home() {
             </p>
           </div>
         </header>
+
+        {/* Search Bar */}
+        <div className="w-full">
+          <CoinSearch placeholder="Search coins... (Bitcoin, ETH, Solana, etc.)" />
+        </div>
 
         <section className="glass-panel overflow-hidden transition-colors mx-auto w-full max-w-[calc(100vw-2rem)] sm:max-w-none">
           <div className="flex items-center justify-between border-b border-slate-200/70 px-4 sm:px-6 py-4 transition-colors">
@@ -275,19 +281,22 @@ export default function Home() {
               <thead className="sticky top-0 z-10 bg-slate-50/90 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 backdrop-blur transition-colors">
                 <tr>
                   <th className="px-4 sm:px-6 py-4 w-auto">Asset</th>
-                  <th className="hidden md:table-cell px-2 sm:px-3 py-4 text-right w-32">Mkt Cap</th>
+                  <th className="hidden md:table-cell px-2 sm:px-3 py-4 text-right w-32">
+                    Mkt Cap
+                  </th>
                   <th className="px-2 sm:px-3 py-4 w-16 sm:w-24">Sym</th>
-                  <th className="px-2 sm:px-3 py-4 text-right w-24 sm:w-32">Price</th>
-                  <th className="px-4 sm:px-6 py-4 text-right w-24 sm:w-32">24h</th>
+                  <th className="px-2 sm:px-3 py-4 text-right w-24 sm:w-32">
+                    Price
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-right w-24 sm:w-32">
+                    24h
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100/80 transition-colors">
                 {loading ? (
                   <tr>
-                    <td
-                      colSpan={5}
-                      className="px-4 sm:px-6 py-16 text-center"
-                    >
+                    <td colSpan={5} className="px-4 sm:px-6 py-16 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <span className="h-8 w-8 animate-pulse rounded-full bg-slate-200" />
                         <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 transition-colors">
@@ -298,7 +307,8 @@ export default function Home() {
                   </tr>
                 ) : (
                   sortedAssets.map((asset) => {
-                    const livePriceValue = prices[asset.id] ?? parseFloat(asset.priceUsd);
+                    const livePriceValue =
+                      prices[asset.id] ?? parseFloat(asset.priceUsd);
                     const pct = parseFloat(asset.changePercent24Hr);
                     const flash = priceFlashes[asset.id];
 
@@ -320,7 +330,9 @@ export default function Home() {
                                   className="h-6 w-6 sm:h-8 sm:w-8 object-contain"
                                 />
                               ) : (
-                                <span className="uppercase tracking-tighter">{asset.symbol.slice(0, 3)}</span>
+                                <span className="uppercase tracking-tighter">
+                                  {asset.symbol.slice(0, 3)}
+                                </span>
                               )}
                             </div>
                             <div className="min-w-0">
