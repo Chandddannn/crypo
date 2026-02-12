@@ -1,22 +1,23 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import dbConnect from "@/lib/mongodb";
+import User from "@/models/User";
 
 /**
- * VERCEL / SERVERLESS FIX:
- * Serverless functions (like Vercel) have a read-only filesystem.
- * Using fs.readFileSync to read from 'data/users.json' will fail if the file doesn't exist,
- * and fs.mkdirSync/writeFileSync will fail on Vercel.
- * 
- * For this virtual terminal, we'll allow any login to succeed if credentials are provided.
- * The client-side WalletContext handles the actual state and persistence in localStorage.
+ * USER LOGIN WITH MONGODB
+ *
+ * Authenticates user credentials against the database.
  */
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({}));
-    const email = (body.email as string | undefined)?.trim().toLowerCase();
-    const password = body.password as string | undefined;
+    await dbConnect();
 
+    const body = await req.json();
+    const email = body.email?.trim().toLowerCase();
+    const password = body.password;
+
+    // Validation
     if (!email || !password) {
       return NextResponse.json(
         { error: "Email and password are required." },
@@ -24,19 +25,38 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate a deterministic user ID based on email
-    const id = crypto.createHash("md5").update(email).digest("hex");
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return NextResponse.json(
+        { error: "Invalid email or password." },
+        { status: 401 },
+      );
+    }
 
-    // In this virtual environment, we'll simulate a successful login.
-    // The client-side WalletContext will load the correct data from localStorage based on this ID.
-    const user = {
-      id,
-      email,
-      name: email.split('@')[0], // Default name from email
-      createdAt: new Date().toISOString(),
+    // Hash the provided password and compare
+    const passwordHash = crypto
+      .createHash("sha256")
+      .update(password)
+      .digest("hex");
+
+    if (user.passwordHash !== passwordHash) {
+      return NextResponse.json(
+        { error: "Invalid email or password." },
+        { status: 401 },
+      );
+    }
+
+    // Return user data (excluding password hash)
+    const userResponse = {
+      id: user._id.toString(),
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+      createdAt: user.createdAt.toISOString(),
     };
 
-    return NextResponse.json(user, { status: 200 });
+    return NextResponse.json(userResponse, { status: 200 });
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(

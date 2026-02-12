@@ -1,24 +1,26 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import dbConnect from "@/lib/mongodb";
+import User from "@/models/User";
+import Wallet from "@/models/Wallet";
 
 /**
- * VERCEL / SERVERLESS FIX:
- * Serverless functions (like Vercel) have a read-only filesystem (except /tmp).
- * Using fs.writeFileSync to save users in 'data/users.json' will fail with 500 errors.
- * 
- * For this demo, we'll use a purely client-side "mock" registration.
- * The server will return a success response with a hashed ID, and the client
- * will handle the local storage persistence via the WalletContext.
+ * USER REGISTRATION WITH MONGODB
+ *
+ * Creates a new user account and initializes their wallet with $10,000 starting balance.
  */
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({}));
-    const email = (body.email as string | undefined)?.trim().toLowerCase();
-    const password = body.password as string | undefined;
-    const name = (body.name as string | undefined)?.trim();
-    const avatarUrl = (body.avatarUrl as string | undefined)?.trim();
+    await dbConnect();
 
+    const body = await req.json();
+    const email = body.email?.trim().toLowerCase();
+    const password = body.password;
+    const name = body.name?.trim();
+    const avatarUrl = body.avatarUrl?.trim();
+
+    // Validation
     if (!email || !password || !name) {
       return NextResponse.json(
         { error: "Name, email, and password are required." },
@@ -26,22 +28,64 @@ export async function POST(req: Request) {
       );
     }
 
-    // In a serverless environment, we can't persist to a local JSON file.
-    // Instead of failing with a 500, we'll generate a deterministic user object.
-    // The client-side WalletContext already handles persistence in localStorage.
-    
-    const id = crypto.createHash("md5").update(email).digest("hex");
-    
-    const user = {
-      id,
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: "Invalid email format." },
+        { status: 400 },
+      );
+    }
+
+    // Password strength validation
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: "Password must be at least 6 characters long." },
+        { status: 400 },
+      );
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "An account with this email already exists." },
+        { status: 409 },
+      );
+    }
+
+    // Hash password (SHA-256 for consistency with existing data)
+    const passwordHash = crypto
+      .createHash("sha256")
+      .update(password)
+      .digest("hex");
+
+    // Create new user
+    const user = await User.create({
       email,
       name,
-      avatarUrl,
-      createdAt: new Date().toISOString(),
+      passwordHash,
+      avatarUrl: avatarUrl || "",
+    });
+
+    // Initialize wallet with $10,000 starting balance
+    await Wallet.create({
+      userId: user._id.toString(),
+      balanceUsd: 10000,
+      positions: {},
+      trades: [],
+    });
+
+    // Return user data (excluding password hash)
+    const userResponse = {
+      id: user._id.toString(),
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+      createdAt: user.createdAt.toISOString(),
     };
 
-    // Return success. The client-side will "log them in" and save to localStorage.
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json(userResponse, { status: 201 });
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(

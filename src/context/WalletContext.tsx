@@ -157,28 +157,36 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
           currentUser = JSON.parse(rawUser);
         }
 
-        // Load all wallets from API
-        const response = await fetch("/api/wallet");
-        if (response.ok) {
-          const userWallets = await response.json();
+        const finalWallets: Record<
+          string,
+          {
+            balanceUsd: number;
+            positions: Record<string, Position>;
+            trades: Trade[];
+          }
+        > = {};
 
-          // If we have a user but no wallet for them in the API yet,
-          // ensure they get the default balance
-          const finalWallets = { ...userWallets };
-          if (currentUser?.id && !finalWallets[currentUser.id]) {
+        // Load wallet from MongoDB API if user is logged in
+        if (currentUser?.id) {
+          const response = await fetch(`/api/wallet?userId=${currentUser.id}`);
+          if (response.ok) {
+            const walletData = await response.json();
+            finalWallets[currentUser.id] = walletData;
+          } else {
+            // If wallet doesn't exist, it will be created by the API
             finalWallets[currentUser.id] = {
               balanceUsd: DEFAULT_BALANCE,
               positions: {},
               trades: [],
             };
           }
-
-          setState({
-            user: currentUser,
-            ownerName: currentUser?.name || "Demo Trader",
-            userWallets: finalWallets,
-          });
         }
+
+        setState({
+          user: currentUser,
+          ownerName: currentUser?.name || "Demo Trader",
+          userWallets: finalWallets,
+        });
       } catch (error) {
         console.error("Failed to hydrate wallet state:", error);
       } finally {
